@@ -9,10 +9,10 @@ export default class CreateUserTable1618693786281
         columns: [
           {
             name: 'id',
-            type: 'integer',
-            generationStrategy: 'increment',
+            type: 'varchar',
+            generationStrategy: 'uuid',
             isGenerated: true,
-            isPrimary: true,
+            isPrimary: true,  
           },
           {
             name: 'email',

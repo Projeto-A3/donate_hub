@@ -9,8 +9,8 @@ import bcrypt from 'bcrypt';
 
 @Entity('users')
 export default class User {
-  @PrimaryGeneratedColumn('increment')
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   email: string;

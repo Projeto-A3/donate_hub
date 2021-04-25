@@ -1,5 +1,5 @@
 import { getRepository } from 'typeorm';
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
 import User from '@models/User';
 import Address  from '@models/Address';
 import viewUser from '@views/user_view';
@@ -14,17 +14,11 @@ const generateToken = (user: User)=>{
 
 class UserController {
   async store(req: Request, res: Response) {
-    const repository2 = getRepository(Address);
-    const { street, number, additionalAddress, district, city, state, zipCode} = req.body;
 
-    const add1 = await repository2.create({street, number, additionalAddress, district, city, state, zipCode});
-    
-    const createdA = await repository2.save(add1);
-
-    
     const repository = getRepository(User);
-    const { type, name, surname, email, password, cpf_cnpj, phone, birthDate, dependents } = req.body;
     
+    const { type, name, surname, email, password, cpf_cnpj, phone, birthDate, dependents} = req.body;
+
     const userExists = await repository.findOne({ email });
     if (userExists) {
       return res.status(409).send({ message: 'Usuário já existe' });
@@ -33,6 +27,13 @@ class UserController {
     const user = repository.create({ name, surname, email, password, cpf_cnpj, phone, birthDate, type, dependents});
     await repository.save(user);
     const token = generateToken(user);
+
+    
+    const addressRepository = getRepository(Address);
+    const { street, number, additionalAddress, district, city, state, zipCode } = req.body;
+
+    const address = await addressRepository.create({street, number, additionalAddress, district, city, state, zipCode});
+    await addressRepository.save(address);
 
     return res.status(200).send({
       user: viewUser.render(user),

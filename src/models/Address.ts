@@ -35,11 +35,10 @@ export default class Address {
 
   @Column()
   zipCode: string;
-
- // @Column({default:'x'})
- // userId: string= 'x';
- // @OneToMany(() => User, user => user.addressId)
-  //@JoinColumn({name: 'userId'})
-  //users: User[];
-
+  
+  @OneToOne(type => User, address => Address)
+  @JoinColumn()
+  user: User;
+  
+  
 }

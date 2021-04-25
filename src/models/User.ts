@@ -1,3 +1,4 @@
+import  Address from './Address';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -5,10 +6,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import bcrypt from 'bcrypt';
-import  Address  from './Address';
 
 
 export enum Types {
@@ -52,17 +53,10 @@ export default class User {
   @Column('int',{default:0})
   dependents: number = 0;
 
-  //@ManyToOne(() => Address, address => address.users)
- // @JoinColumn({ name: 'addressId'})
-  //addressId: Address;
+  
+  @OneToOne(type => Address, user => User)
+  address: Address;
 
-  /*@OneToOne(() => Address, (address: Address) => address.user, {
-    cascade: true,
-    eager: true,
-  })
-  @JoinColumn()
-  public address: Address;
-*/
   @BeforeInsert()
   @BeforeUpdate()
   hashPassword(): void {

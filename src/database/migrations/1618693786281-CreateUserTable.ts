@@ -15,6 +15,16 @@ export default class CreateUserTable1618693786281
             isPrimary: true,  
           },
           {
+            name: 'name',
+            type: 'varchar',
+            isNullable: false,
+          },
+          {
+            name:'surname',
+            type:'varchar',
+            isNullable: true
+          },
+          {
             name: 'email',
             type: 'varchar',
             isUnique: true,
@@ -24,6 +34,37 @@ export default class CreateUserTable1618693786281
             name: 'password',
             type: 'varchar',
             isNullable: false,
+          },
+          {
+            name: 'cpf_cnpj',
+            type: 'varchar',
+            isNullable: false,
+          },
+          {
+            name: 'phone',
+            type: 'varchar',
+            isNullable: false,
+          },
+          {
+            name: 'birthDate',
+            type: 'date',
+            isNullable: true
+          },
+          {
+            name:'status',
+            type: 'int',
+            isNullable: false,
+          },
+          {
+            name: 'type',
+            type: 'enum',
+            isNullable: false,
+            enum: ['doador', 'donatario', 'admin']
+          },
+          {
+            name: 'dependents',
+            type: 'int',
+            isNullable: true,
           },
         ],
       }),

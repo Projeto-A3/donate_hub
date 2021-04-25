@@ -14,14 +14,15 @@ const generateToken = (user: User)=>{
 class UserController {
   async store(req: Request, res: Response) {
     const repository = getRepository(User);
-    const { email, password } = req.body;
+    const { type, name, surname, email, password, cpf_cnpj, phone, birthDate, dependents} = req.body;
+
     const userExists = await repository.findOne({ email });
     if (userExists) {
       return res.status(409).send({ message: 'Usuário já existe' });
     }
-    const user = repository.create({ email, password });
+  
+    const user = repository.create({ name, surname, email, password, cpf_cnpj, phone, birthDate, type, dependents});
     await repository.save(user);
-
     const token = generateToken(user);
 
     return res.status(200).send({

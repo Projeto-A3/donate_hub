@@ -3,9 +3,18 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import bcrypt from 'bcrypt';
+
+
+export enum Types {
+  doador = 'doador',
+  donatario = 'donatario',
+  admin = 'admin'
+};
 
 @Entity('users')
 export default class User {
@@ -13,11 +22,42 @@ export default class User {
   id: string;
 
   @Column()
+  name: string;
+
+  @Column()
+  surname: string;
+
+  @Column()
   email: string;
 
   @Column()
   password: string;
 
+  @Column()
+  cpf_cnpj: string;
+
+  @Column()
+  phone: string;
+
+  @Column()
+  birthDate: Date;
+
+  @Column('int',{default:0})
+  status: number = 0;
+
+  @Column({type:'enum', enum: Types, default: Types.doador})
+  type: string = Types.doador;
+
+  @Column('int',{default:0})
+  dependents: number = 0;
+
+  /*@OneToOne(() => Address, (address: Address) => address.user, {
+    cascade: true,
+    eager: true,
+  })
+  @JoinColumn()
+  public address: Address;
+*/
   @BeforeInsert()
   @BeforeUpdate()
   hashPassword(): void {

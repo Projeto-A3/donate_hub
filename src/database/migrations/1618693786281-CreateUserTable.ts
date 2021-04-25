@@ -66,6 +66,10 @@ export default class CreateUserTable1618693786281
             type: 'int',
             isNullable: true,
           },
+          {
+            name: 'addressId',
+            type: 'int',
+          },
         ],
       }),
     );

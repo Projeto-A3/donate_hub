@@ -1,6 +1,7 @@
 import { getRepository } from 'typeorm';
 import { Request, Response } from 'express';
 import User from '@models/User';
+import Address  from '@models/Address';
 import viewUser from '@views/user_view';
 import authConfig from '@config/auth';
 import bcrypt from 'bcrypt';
@@ -13,9 +14,17 @@ const generateToken = (user: User)=>{
 
 class UserController {
   async store(req: Request, res: Response) {
-    const repository = getRepository(User);
-    const { type, name, surname, email, password, cpf_cnpj, phone, birthDate, dependents} = req.body;
+    const repository2 = getRepository(Address);
+    const { street, number, additionalAddress, district, city, state, zipCode} = req.body;
 
+    const add1 = await repository2.create({street, number, additionalAddress, district, city, state, zipCode});
+    
+    const createdA = await repository2.save(add1);
+
+    
+    const repository = getRepository(User);
+    const { type, name, surname, email, password, cpf_cnpj, phone, birthDate, dependents } = req.body;
+    
     const userExists = await repository.findOne({ email });
     if (userExists) {
       return res.status(409).send({ message: 'Usuário já existe' });
@@ -30,6 +39,7 @@ class UserController {
       token,
     });
   }
+
   async authenticate (req: Request, res: Response) {
     const repository = getRepository(User);
     const { email, password } = req.body;

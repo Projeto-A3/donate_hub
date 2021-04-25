@@ -1,0 +1,13 @@
+.navigation-component {
+  .navbar-brand {
+    width: 80px;
+  }
+  .nav-link{
+    color: theme-color("dark");
+    font-weight: 600;
+    &.active {
+      text-decoration: underline;
+      color: theme-color("secundary");
+    }
+  }
+}

@@ -1,0 +1,21 @@
+@import './themes';
+@import "~bootstrap/scss/bootstrap";
+@import "./mixins";
+@import "./variables";
+@import "./functions";
+@import "./components/navigation.scss";
+
+html, body {
+  background-color: theme-color('light');
+}
+
+body,
+input,
+textarea,
+button {
+  font-family: 'Nunito', sans-serif;
+}
+
+#root, .app {
+  height: 100vh;
+}

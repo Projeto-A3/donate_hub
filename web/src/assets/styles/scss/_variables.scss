@@ -1,0 +1,16 @@
+.extra-bold {
+  font-weight: 800;
+}
+
+.fadeIn  {
+  @include animation(fadeIn 0.2s linear);
+}
+
+@include keyframes (fadeIn) {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

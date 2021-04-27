@@ -5,6 +5,9 @@ export default {
     return {
       email: user.email,
       id: user.id,
+      address: user.address,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     }
   },
 };

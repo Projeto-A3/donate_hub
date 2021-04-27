@@ -24,19 +24,21 @@ class UserController {
       return res.status(409).send({ message: 'Usuário já existe' });
     }
   
-    const user = repository.create({ name, surname, email, password, cpf_cnpj, phone, birthDate, type, dependents});
+    const user = repository.create({ name, surname, email, password, cpf_cnpj, phone, birthDate, type, dependents });
     await repository.save(user);
     const token = generateToken(user);
 
     
     const addressRepository = getRepository(Address);
-    const { street, number, additionalAddress, district, city, state, zipCode } = req.body;
+    const { address: { street, number, additionalDetails, district, city, state, zipCode } } = req.body;
 
-    const address = await addressRepository.create({street, number, additionalAddress, district, city, state, zipCode});
+    const address = addressRepository.create({ street, number, additionalDetails, district, city, state, zipCode, user });
     await addressRepository.save(address);
 
+    const finalUser = await repository.findOneOrFail({ where: { id: user.id }, relations: ['address'] })
+
     return res.status(200).send({
-      user: viewUser.render(user),
+      user: viewUser.render(finalUser),
       token,
     });
   }
@@ -44,7 +46,7 @@ class UserController {
   async authenticate (req: Request, res: Response) {
     const repository = getRepository(User);
     const { email, password } = req.body;
-    const user = await repository.findOne({ email });
+    const user = await repository.findOne({ where: { email }, relations: ['address'] });
     if(!user) {
       return res.status(401).send({ message: 'E-mail ou senha inválidas' });
     }
@@ -52,7 +54,6 @@ class UserController {
     if(!validPassword) {
       return res.status(401).send({ message: 'E-mail ou senha inválidas' });
     }
-
     const token = generateToken(user);
     
     res.status(200).send({

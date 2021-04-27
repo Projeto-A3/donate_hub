@@ -1,12 +1,11 @@
-import  User  from './User';
+import User from './User';
 
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   OneToOne,
-  OneToMany,
-  JoinColumn
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('addresses')
@@ -22,7 +21,7 @@ export default class Address {
   number: string;
 
   @Column()
-  additionalAddress : string;
+  additionalDetails : string;
 
   @Column()
   district: string;
@@ -36,9 +35,8 @@ export default class Address {
   @Column()
   zipCode: string;
   
-  @OneToOne(type => User, address => Address)
+  @OneToOne(()=> User, user => user.address)
   @JoinColumn()
   user: User;
-  
   
 }

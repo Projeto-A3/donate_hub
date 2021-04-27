@@ -3,11 +3,11 @@ import {
   BeforeInsert,
   BeforeUpdate,
   Column,
+  CreateDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import bcrypt from 'bcrypt';
 
@@ -53,9 +53,24 @@ export default class User {
   @Column('int',{default:0})
   dependents: number = 0;
 
-  
-  @OneToOne(type => Address, user => User)
+  @OneToOne(()=> Address, address => address.user)
   address: Address;
+
+  @CreateDateColumn({ default: ()=> new Date() })
+  createdAt: Date;
+
+  @UpdateDateColumn({ default: ()=> new Date() }) 
+  updatedAt: Date;
+
+  @BeforeInsert()
+  updateDateCreation() {
+    this.createdAt = new Date();
+  }
+
+  @BeforeUpdate()
+  updateDateUpdate() {
+    this.updatedAt = new Date();
+  }
 
   @BeforeInsert()
   @BeforeUpdate()

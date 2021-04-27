@@ -67,9 +67,15 @@ export default class CreateUserTable1618693786281
             isNullable: true,
           },
           {
-            name: 'addressId',
-            type: 'int',
+            name: 'createdAt',
+            type: 'datetime',
+            default: 'now()',
           },
+          {
+            name: 'updatedAt',
+            type: 'datetime',
+            default: 'now()',
+          }
         ],
       }),
     );

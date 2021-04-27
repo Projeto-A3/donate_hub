@@ -26,7 +26,7 @@ implements MigrationInterface {
               isNullable: false,
             },
             {
-              name: 'additionalAddress',
+              name: 'additionalDetails',
               type: 'varchar',
               isNullable: true,
             },
@@ -55,6 +55,16 @@ implements MigrationInterface {
               type: 'varchar',
               isNullable: true,
             },
+          ],
+          foreignKeys: [
+            {
+              name: 'addressesUser',
+              columnNames: ['userId'],
+              referencedTableName: 'users',
+              referencedColumnNames: ['id'],
+              onUpdate: 'CASCADE',
+              onDelete: 'CASCADE'
+            }
           ]
         })
       )

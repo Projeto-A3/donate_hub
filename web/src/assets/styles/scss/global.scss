@@ -1,9 +1,14 @@
-@import './themes';
+@import "./themes";
 @import "~bootstrap/scss/bootstrap";
+@import "./functions";
 @import "./mixins";
 @import "./variables";
-@import "./functions";
+
+// Components
 @import "./components/navigation.scss";
+
+// PAGES
+@import "./pages/login.scss";
 
 html, body {
   background-color: theme-color('light');
@@ -14,6 +19,10 @@ input,
 textarea,
 button {
   font-family: 'Nunito', sans-serif;
+}
+
+input, textarea, button {
+  font-size: calculateRem(18px);
 }
 
 #root, .app {

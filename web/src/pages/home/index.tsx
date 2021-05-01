@@ -4,9 +4,9 @@ import bannerImage from '../../assets/images/banner_home.svg'
 
 const Home = () => {
   return (
-    <div className="page-home py-5 flex-grow-1 d-flex align-items-center fadeIn">
+    <section className="page-default page-home fadeIn">
       <Container>
-        <Row className="justify-content-between align-items-center">
+        <Row className="justify-content-between align-items-center flex-column-reverse flex-lg-row">
           <Col lg={5}>
             <h1 className="extra-bold text-secundary mb-4">
               Leve a felicidade para o próximo
@@ -39,7 +39,7 @@ const Home = () => {
           </Col>
         </Row>
       </Container>
-    </div>
+    </section>
   )
 }
 

@@ -9,8 +9,10 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <section className="d-flex flex-column justify-content-center h-100">
-          <Navigation />
+        <section className="d-flex flex-wrap justify-content-center h-100">
+          <div className="w-100">
+            <Navigation />
+          </div>
           <Routes />
         </section>
       </AuthProvider>

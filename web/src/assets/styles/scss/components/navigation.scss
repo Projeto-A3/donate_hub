@@ -3,11 +3,11 @@
     width: 80px;
   }
   .nav-link{
-    color: theme-color("dark");
+    color: theme-color("dark")!important;
     font-weight: 600;
     &.active {
       text-decoration: underline;
-      color: theme-color("secundary");
+      color: theme-color("secundary")!important;
     }
   }
 }

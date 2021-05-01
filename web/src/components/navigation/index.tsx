@@ -1,37 +1,47 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Navbar, Container, Nav, Image } from 'react-bootstrap'
 import { NavLink, Link } from 'react-router-dom'
 import logo from '../../assets/images/logo.svg'
 
 const Navigation: React.FC = () => {
+  const [expanded, setExpanded] = useState(false)
+
   return (
-    <Navbar className="navigation-component">
+    <Navbar
+      expanded={expanded}
+      onToggle={setExpanded}
+      expand="lg"
+      className="navigation-component mb-4 mb-lg-0"
+    >
       <Container>
-        <Navbar.Brand>
-          <Link to="/">
-            <Image src={logo} alt="Donate Hub" fluid />
-          </Link>
+        <Navbar.Brand as={Link} to="/">
+          <Image src={logo} alt="Donate Hub" fluid />
         </Navbar.Brand>
-        <div className="form-inline">
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav.Link as={NavLink} to="/" activeClassName="active">
+        <Navbar.Toggle aria-controls="navigation-donate-hub" />
+        <Navbar.Collapse id="navigation-donate-hub">
+          <Nav className="ml-auto" onClick={() => setExpanded(false)}>
+            <Nav.Link as={NavLink} to="/" exact activeClassName="active">
               Home
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/sobre">
+            <Nav.Link as={NavLink} to="/sobre" exact activeClassName="active">
               Sobre
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/contato">
+            <Nav.Link as={NavLink} to="/contato" exact activeClassName="active">
               Contato
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/login">
+            <Nav.Link as={NavLink} to="/login" exact activeClassName="active">
               Login
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/cadastrar">
+            <Nav.Link
+              as={NavLink}
+              to="/cadastrar"
+              exact
+              activeClassName="active"
+            >
               Cadastrar
             </Nav.Link>
-          </Navbar.Collapse>
-        </div>
+          </Nav>
+        </Navbar.Collapse>
       </Container>
     </Navbar>
   )

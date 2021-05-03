@@ -1,10 +1,12 @@
 import  Address from './Address';
+import  Request from './Request';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -55,6 +57,12 @@ export default class User {
 
   @OneToOne(()=> Address, address => address.user)
   address: Address;
+
+  @OneToOne(()=> Request, request => request.donee)
+  requestDonee: Request;
+
+  @OneToOne(()=> Request, request => request.donee)
+  requestDonor: Request;
 
   @CreateDateColumn({ default: ()=> new Date() })
   createdAt: Date;

@@ -13,6 +13,10 @@ const generateToken = (user: User)=>{
 }
 
 class UserController {
+  index(req: Request, res: Response) {
+    return res.send({ userId: req.userId });
+  }
+
   async store(req: Request, res: Response) {
 
     const repository = getRepository(User);
@@ -54,9 +58,17 @@ class UserController {
     if(!validPassword) {
       return res.status(401).send({ message: 'E-mail ou senha inválidas' });
     }
+    /*
     const token = generateToken(user);
     
     res.status(200).send({
+      user: viewUser.render(user),
+      token,
+    });
+    */
+    const token = jwt.sign({ id: user.id }, 'secret');
+
+    return res.json({
       user: viewUser.render(user),
       token,
     });

@@ -61,8 +61,10 @@ export default class User {
   @OneToOne(()=> Request, request => request.donee)
   requestDonee: Request;
 
-  @OneToOne(()=> Request, request => request.donee)
+  @OneToOne(()=> Request, request => request.donor)
   requestDonor: Request;
+  //@OneToOne(()=> Request, request => request.donor)
+  //requestDonor: Request;
 
   @CreateDateColumn({ default: ()=> new Date() })
   createdAt: Date;

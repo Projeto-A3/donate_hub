@@ -3,7 +3,7 @@ import { Container, Row, Col, Spinner } from 'react-bootstrap'
 import { Formik, FormikHelpers } from 'formik'
 import { Link } from 'react-router-dom'
 import schemas from '../../schemas/utils'
-import { login as InterfaceLogin } from '../../interfaces'
+import { Login as InterfaceLogin } from '../../interfaces'
 
 const Login = () => {
   function requestLogin(
@@ -21,7 +21,7 @@ const Login = () => {
       <Container>
         <Row className="justify-content-center">
           <Col lg={7}>
-            <div className="card-login shadow">
+            <div className="card-form shadow">
               <header className="mb-5 text-center text-dark">
                 <h1 className="font-weight-bold text-secundary">Login</h1>
               </header>

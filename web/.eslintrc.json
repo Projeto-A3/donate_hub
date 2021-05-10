@@ -30,6 +30,8 @@
     "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": ["error"],
     "@typescript-eslint/explicit-module-boundary-types": "off",
+    "camelcase": "off",
+    "@typescript-eslint/camelcase": "off",
     "@typescript-eslint/ban-types": [
       "error",
       {

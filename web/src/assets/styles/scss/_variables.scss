@@ -18,7 +18,7 @@
     font-size: calculateRem(20px);
     font-weight: 800;
   }
-  input {
+  input, select {
     &:not([type='checkbox']) {
       border-radius: 10px;
       padding: 20px;
@@ -38,6 +38,24 @@
     &.error {
       border: 1px solid theme-color('danger');
     }
+  }
+  select {
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+  }
+  position: relative;
+  .select-arrow, .show-password{
+    position: absolute;
+    right: 20px;
+    top: 60px;
+    z-index: 0;
+  }
+  .show-password {
+    border: 0;
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
   }
 }
 
@@ -64,6 +82,15 @@
 
 .text-underline {
   text-decoration: underline;
+}
+
+.card-form {
+  background-color: rgba(#fff, 0.3);
+  border-radius: 10px;
+  @include media-breakpoint-down(sm) {
+    padding: 40px 20px;
+  }
+  padding: 50px;
 }
 
 @include keyframes (fadeIn) {

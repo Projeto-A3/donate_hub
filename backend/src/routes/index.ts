@@ -5,14 +5,21 @@ import authMiddleware from '@middlewares/authMiddleware';
 const routes = Router();
 
 routes.post('/user', UserController.store);
-//routes.put('/user/:id', UserController.update);
+
 routes.post('/auth', UserController.authenticate);
 routes.get('/users', authMiddleware, UserController.index);
 
-//listagem de usuarios
-routes.get('/usersList', UserController.list);
+//listagem de usuários
+routes.get('/usersList', UserController.listAll);
 routes.get('/adminsList', UserController.listAdmin);
 routes.get('/doneesList', UserController.listDonee);
 routes.get('/donorsList', UserController.listDonor);
+
+//busca de usuários via atributo
+routes.post('/findByEmail', UserController.findByEmail);
+routes.post('/findByCode', UserController.findByCode);
+
+//alteração de usuário
+routes.put('/user/:id', UserController.updateUser);
 
 export default routes;

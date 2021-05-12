@@ -7,9 +7,6 @@
 // Components
 @import "./components/navigation.scss";
 
-// PAGES
-@import "./pages/login.scss";
-
 html, body {
   background-color: theme-color('light');
 }

@@ -1,5 +1,5 @@
 import { getRepository } from 'typeorm';
-import { json, request, Request, response, Response } from 'express';
+import { Request, response, Response } from 'express';
 import User from '@models/User';
 import Address from '@models/Address';
 import viewUser from '@views/user_view';
@@ -209,6 +209,26 @@ class UserController {
       return res.json(userUpdated);
     }    
 
+    return response.status(404).json({message: 'Usuário não encontrado'})
+  
+  }
+
+  async updateAddress(req: Request, res: Response) {
+    const repository = getRepository(Address);
+    const userRepository = getRepository(User);
+    const { uid } = req.params;
+    console.log(uid);
+    
+    const idAddress = await repository.createQueryBuilder("add").where("add.userId = :uid", {uid: uid}).getOne();
+
+    console.log(idAddress +" " + uid)
+    if(idAddress){
+      const address = await repository.update(idAddress.id, req.body);
+
+        const addressUpdated = await repository.findOne(idAddress);
+        return res.json(addressUpdated);
+      
+    }
     return response.status(404).json({message: 'Usuário não encontrado'})
   
   }

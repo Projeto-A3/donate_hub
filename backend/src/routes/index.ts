@@ -21,5 +21,6 @@ routes.post('/findByCode', UserController.findByCode);
 
 //alteração de usuário
 routes.put('/user/:id', UserController.updateUser);
+routes.put('/user/address/:uid', UserController.updateAddress);
 
 export default routes;

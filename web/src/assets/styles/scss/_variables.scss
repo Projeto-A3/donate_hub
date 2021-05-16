@@ -38,6 +38,9 @@
     &.error {
       border: 1px solid theme-color('danger');
     }
+    &:disabled {
+      background-color: rgba(#999, 0.4);
+    }
   }
   select {
     -webkit-appearance:none;
@@ -56,6 +59,11 @@
     background-color: transparent;
     padding: 0;
     margin: 0;
+  }
+  .spinner-animation {
+    position: absolute;
+    right: 10px;
+    top: 55px;
   }
 }
 

@@ -3,7 +3,9 @@ import { Container, Row, Col, Spinner } from 'react-bootstrap'
 import { FiChevronDown, FiEye, FiEyeOff } from 'react-icons/fi'
 import { Formik, FormikHelpers } from 'formik'
 import { UserRegister } from 'interfaces'
+import Inputmask from 'components/Inputmask'
 import { ufs } from 'utils'
+import viacep from 'services/viacep'
 
 const user: UserRegister = {
   name: '',
@@ -29,6 +31,7 @@ const user: UserRegister = {
 const Cadastrar = () => {
   const [isLegal, setIsLegal] = useState(false)
   const [showPassoword, setShowPassword] = useState(false)
+  const [loadingCep, setLoadingCep] = useState(false)
 
   function handlerRegister(
     value: UserRegister,
@@ -58,6 +61,7 @@ const Cadastrar = () => {
                   handleSubmit,
                   handleChange,
                   handleBlur,
+                  setFieldValue,
                   values,
                   isSubmitting,
                   errors,
@@ -132,7 +136,10 @@ const Cadastrar = () => {
                           <label htmlFor="cpf_cnpj">
                             {isLegal ? 'CNPJ' : 'CPF'}
                           </label>
-                          <input
+                          <Inputmask
+                            mask={
+                              isLegal ? '99.999.999/9999-99' : '999.999.999-99'
+                            }
                             type="tel"
                             name="cpf_cnpj"
                             onChange={handleChange}
@@ -163,7 +170,12 @@ const Cadastrar = () => {
                       <Col lg={6}>
                         <div className="form-field mb-4">
                           <label htmlFor="phone">Telefone</label>
-                          <input
+                          <Inputmask
+                            mask={
+                              values.phone.length > 14
+                                ? '(99) 99999-9999'
+                                : '(99) 9999-99999'
+                            }
                             type="tel"
                             name="phone"
                             onChange={handleChange}
@@ -293,13 +305,40 @@ const Cadastrar = () => {
                       <Col lg={6}>
                         <div className="form-field mb-4">
                           <label htmlFor="zipCode">CEP</label>
-                          <input
+                          <Inputmask
+                            mask="99999-999"
                             type="tel"
                             name="address.zipCode"
                             onChange={handleChange}
-                            onBlur={handleBlur}
+                            onBlur={async e => {
+                              handleBlur(e)
+                              let { value } = e.target
+                              value = value.replace(/[^0-9]/g, '')
+                              setLoadingCep(true)
+                              try {
+                                if (value.length < 8) throw new Error()
+                                const res = await viacep(e.target.value)
+                                if (res.erro) {
+                                  throw new Error()
+                                }
+                                const {
+                                  logradouro,
+                                  bairro,
+                                  localidade,
+                                  uf
+                                } = res
+                                setFieldValue('address.street', logradouro)
+                                setFieldValue('address.district', bairro)
+                                setFieldValue('address.city', localidade)
+                                setFieldValue('address.state', uf)
+                              } catch (error) {}
+                              setLoadingCep(false)
+                            }}
                             id="zipCode"
-                            value={values.address.zipCode}
+                            value={values.address.zipCode.replace(
+                              /[^0-9]/g,
+                              ''
+                            )}
                             autoComplete="off"
                             className={
                               touched.address?.zipCode &&
@@ -331,7 +370,14 @@ const Cadastrar = () => {
                                 ? 'error'
                                 : ''
                             }
+                            disabled={loadingCep}
                           />
+
+                          {loadingCep && (
+                            <span className="spinner-animation">
+                              <Spinner animation="border" />
+                            </span>
+                          )}
                           <span className="text-danger">
                             {errors.address?.street &&
                               touched.address?.street &&
@@ -356,7 +402,13 @@ const Cadastrar = () => {
                                 ? 'error'
                                 : ''
                             }
+                            disabled={loadingCep}
                           />
+                          {loadingCep && (
+                            <span className="spinner-animation">
+                              <Spinner animation="border" />
+                            </span>
+                          )}
                           <span className="text-danger">
                             {errors.address?.district &&
                               touched.address?.district &&
@@ -395,7 +447,13 @@ const Cadastrar = () => {
                           <input
                             type="tel"
                             name="address.number"
-                            onChange={handleChange}
+                            onChange={e => {
+                              e.target.value = e.target.value.replace(
+                                /[^0-9]/g,
+                                ''
+                              )
+                              handleChange(e)
+                            }}
                             onBlur={handleBlur}
                             id="number"
                             value={values.address.number}
@@ -429,7 +487,13 @@ const Cadastrar = () => {
                                 ? 'error'
                                 : ''
                             }
+                            disabled={loadingCep}
                           />
+                          {loadingCep && (
+                            <span className="spinner-animation">
+                              <Spinner animation="border" />
+                            </span>
+                          )}
                           <span className="text-danger">
                             {errors.address?.city &&
                               touched.address?.city &&
@@ -451,6 +515,7 @@ const Cadastrar = () => {
                                 ? 'error'
                                 : ''
                             }
+                            disabled={loadingCep}
                           >
                             <option disabled hidden></option>
                             {ufs.map((opt, index) => (
@@ -459,6 +524,11 @@ const Cadastrar = () => {
                               </option>
                             ))}
                           </select>
+                          {loadingCep && (
+                            <span className="spinner-animation">
+                              <Spinner animation="border" />
+                            </span>
+                          )}
                           <span className="select-arrow">
                             <FiChevronDown size={25} />
                           </span>

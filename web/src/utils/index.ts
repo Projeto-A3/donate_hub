@@ -1,6 +1,3 @@
-import axios from 'axios'
-import { Viacep } from 'interfaces'
-
 export const ufs = [
   'AC',
   'AL',
@@ -30,16 +27,3 @@ export const ufs = [
   'SE',
   'TO'
 ]
-
-export const cep = async (value: string) => {
-  try {
-    const { data }: { data: Viacep } = await axios.get(
-      `https://viacep.com.br/ws/${value.replace(/[^0-9]/g, '')}/json/`
-    )
-    return data
-  } catch (error) {
-    return {
-      error: true
-    }
-  }
-}

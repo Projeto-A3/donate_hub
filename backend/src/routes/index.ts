@@ -19,7 +19,12 @@ routes.get('/donorsList', UserController.listDonor);
 routes.post('/findByEmail', UserController.findByEmail);
 routes.post('/findByCode', UserController.findByCode);
 
-//alteração de usuário
+//alteração de usuário e endereço
 routes.put('/user/:id', UserController.updateUser);
+routes.put('/user/address/:uid', UserController.updateAddress);
+
+//remoção de usuário e endereço
+routes.delete('/user/:id', UserController.removeUser);
+//routes.delete('/user/:id', UserController.removeAddresses);
 
 export default routes;

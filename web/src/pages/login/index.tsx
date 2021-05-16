@@ -2,19 +2,21 @@ import React from 'react'
 import { Container, Row, Col, Spinner } from 'react-bootstrap'
 import { Formik, FormikHelpers } from 'formik'
 import { Link } from 'react-router-dom'
-import schemas from '../../schemas/utils'
-import { Login as InterfaceLogin } from '../../interfaces'
+import schemas from 'schemas/utils'
+import { UserLogin } from 'interfaces'
+import { useAuth } from 'contexts/auth'
 
 const Login = () => {
-  function requestLogin(
-    value: InterfaceLogin,
-    actions: FormikHelpers<InterfaceLogin>
+  const { signIn } = useAuth()
+  async function requestLogin(
+    value: UserLogin,
+    actions: FormikHelpers<UserLogin>
   ) {
-    console.log(value)
     actions.setSubmitting(true)
-    setTimeout(() => {
-      actions.setSubmitting(false)
-    }, 5000)
+    try {
+      await signIn(value)
+    } catch (error) {}
+    actions.setSubmitting(false)
   }
   return (
     <section className="page-default page-login fadeIn">
@@ -87,6 +89,7 @@ const Login = () => {
                       <button
                         className="theme-button secundary"
                         disabled={isSubmitting}
+                        type="submit"
                       >
                         {isSubmitting ? (
                           <span className="d-flex justify-content-between align-items-center">

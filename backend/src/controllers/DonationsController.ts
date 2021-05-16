@@ -1,19 +1,36 @@
 import { getRepository } from 'typeorm';
-import Order from '@models/Request';
 import { Request, Response } from 'express';
-import viewRequest from '@views/request_view';
+import viewDonations from '@views/donations_view';
 
 import authConfig from '@config/auth';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import Donations from '@models/Donations';
 
-class RequestController {
+class DonationsController {
   index(req: Request, res: Response) {
     return res.send({requestId: req.requestId});
   }
 
+  listAll (req: Request, res: Response) {
+    return res.status(200).send([
+      {
+        id: 0,
+        title: 'Teste',
+        description: 'Descrição',
+        userId: req.userId,
+      },
+      {
+        id: 1,
+        title: 'Teste 1',
+        description: 'Descrição 2',
+        userId: req.userId
+      }
+    ])
+  }
+
   async store(req: Request, res: Response) {
-    const repository = getRepository(Order);
+    const repository = getRepository(Donations);
 
     const {
       title,
@@ -34,8 +51,10 @@ class RequestController {
     });
 
     return res.status(200).send({
-      request: viewRequest.render(finalRequest)
+      request: viewDonations.render(finalRequest)
       
     });
   }
 }
+
+export default new DonationsController

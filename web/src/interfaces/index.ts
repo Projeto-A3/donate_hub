@@ -1,4 +1,4 @@
-export interface Login {
+export interface UserLogin {
   email: string
   password: string
 }
@@ -24,6 +24,15 @@ export interface UserRegister {
   birthDate: string
   dependents: number
   address: Address
+}
+
+export interface User {
+  user: Omit<UserRegister, 'password'> & {
+    id: string
+    createdAt: string
+    updatedAt: string
+  }
+  token: string
 }
 
 export interface Viacep {

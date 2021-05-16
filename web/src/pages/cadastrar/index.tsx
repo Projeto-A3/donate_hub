@@ -6,6 +6,7 @@ import { UserRegister } from 'interfaces'
 import Inputmask from 'components/Inputmask'
 import { ufs } from 'utils'
 import viacep from 'services/viacep'
+import { useAuth } from 'contexts/auth'
 
 const user: UserRegister = {
   name: '',
@@ -16,7 +17,7 @@ const user: UserRegister = {
   cpf_cnpj: '',
   dependents: 0,
   phone: '',
-  type: '',
+  type: 'doador',
   address: {
     street: '',
     number: '',
@@ -32,16 +33,19 @@ const Cadastrar = () => {
   const [isLegal, setIsLegal] = useState(false)
   const [showPassoword, setShowPassword] = useState(false)
   const [loadingCep, setLoadingCep] = useState(false)
+  const { signUp } = useAuth()
 
-  function handlerRegister(
+  async function handlerRegister(
     value: UserRegister,
     actions: FormikHelpers<UserRegister>
   ) {
-    console.log(value)
     actions.setSubmitting(true)
-    setTimeout(() => {
-      actions.setSubmitting(false)
-    }, 5000)
+    try {
+      await signUp(value)
+    } catch (error) {
+      console.log(error)
+    }
+    actions.setSubmitting(false)
   }
   return (
     <section className="page-default page-cadastrar fadeIn">
@@ -537,6 +541,39 @@ const Cadastrar = () => {
                               touched.address?.state &&
                               errors.address?.state}
                           </span>
+                        </div>
+                      </Col>
+                      <Col lg={12}>
+                        <div className="form-field mb-4">
+                          <label>Tipo de usuário</label>
+                          <div className="d-flex">
+                            <div className="group-radio w-50 mr-3">
+                              <input
+                                type="radio"
+                                name="type"
+                                id="user_doador"
+                                value="doador"
+                                checked={values.type === 'doador'}
+                                onChange={({ target }) =>
+                                  setFieldValue('type', target.value)
+                                }
+                              />
+                              <label htmlFor="user_doador">Doador</label>
+                            </div>
+                            <div className="group-radio w-50">
+                              <input
+                                type="radio"
+                                name="type"
+                                id="user_donatario"
+                                value="donatario"
+                                checked={values.type === 'donatario'}
+                                onChange={({ target }) =>
+                                  setFieldValue('type', target.value)
+                                }
+                              />
+                              <label htmlFor="user_donatario">Donatário</label>
+                            </div>
+                          </div>
                         </div>
                       </Col>
                     </Row>

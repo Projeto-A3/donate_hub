@@ -1,5 +1,5 @@
 import  Address from './Address';
-import  Request from './Request';
+import  Request from './Donations';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -17,7 +17,6 @@ import bcrypt from 'bcrypt';
 export enum Types {
   doador = 'doador',
   donatario = 'donatario',
-  admin = 'admin'
 };
 
 @Entity('users')

@@ -14,7 +14,7 @@ import {
 } from 'typeorm';
 
 @Entity('requests')
-export default class Request {
+export default class Donations {
 
   @PrimaryGeneratedColumn('increment') 
   id: number; 

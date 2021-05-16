@@ -19,34 +19,41 @@ class UserController {
 
   async findByEmail(req: Request, res: Response) {
     const repository = getRepository(User);
-    const {email} = req.body;
-    const user = await repository.findOne({email});
+    const { email } = req.body;
+    const user = await repository.findOne({ email }, {relations: ['address']});
 
-    if(!user){
-      return res.status(404).send({ message: 'Email de usuário não encontrado' });
+    if (!user) {
+      return res
+        .status(404)
+        .send({ message: 'Email de usuário não encontrado' });
     }
     return res.status(200).send({
-      user
+      user,
     });
   }
-  //Busca por CPF ou CNPJ 
+  
+  //Busca por CPF ou CNPJ
   async findByCode(req: Request, res: Response) {
     const repository = getRepository(User);
-    const {cpf_cnpj} = req.body;
-    const user = await repository.findOne({cpf_cnpj});
+    const { cpf_cnpj } = req.body;
+    const user = await repository.findOne({ cpf_cnpj });
 
-    if(!user){
-      return res.status(404).send({ message: 'Cpf ou cnpj de usuário não encontrado' });
+    if (!user) {
+      return res
+        .status(404)
+        .send({ message: 'Cpf ou cnpj de usuário não encontrado' });
     }
     return res.status(200).send({
-      user
+      user,
     });
   }
 
   async listAll(req: Request, res: Response) {
     const repository = getRepository(User);
     const savedUsers = await repository.find({});
-
+    if (!savedUsers){
+      return res.send(404).send({message: "Não há usuários cadastrados"});
+    }
     return res.status(200).send({
       savedUsers,
     });
@@ -56,6 +63,9 @@ class UserController {
     const repository = getRepository(User);
     const admins = await repository.find({ where: { type: 'admin' } });
 
+    if (!admins){
+      return res.send(404).send({message: "Não há administradores cadastrados"});
+    }
     return res.status(200).send({
       admins,
     });
@@ -65,6 +75,9 @@ class UserController {
     const repository = getRepository(User);
     const donees = await repository.find({ where: { type: 'donatario' } });
 
+    if (!donees){
+      return res.send(404).send({message: "Não há donatarios cadastrados"});
+    }
     return res.status(200).send({
       donees,
     });
@@ -74,6 +87,9 @@ class UserController {
     const repository = getRepository(User);
     const donors = await repository.find({ where: { type: 'doador' } });
 
+    if (!donors){
+      return res.send(404).send({message: "Não há doadores cadastrados"});
+    }
     return res.status(200).send({
       donors,
     });
@@ -83,6 +99,9 @@ class UserController {
     const repository = getRepository(User);
     const activeUsers = await repository.find({ where: { status: 1 } });
 
+    if (!activeUsers){
+      return res.send(404).send({message: "Não há usuários ativos cadastrados"});
+    }
     return res.status(200).send({
       activeUsers,
     });
@@ -92,6 +111,9 @@ class UserController {
     const repository = getRepository(User);
     const inactiveUsers = await repository.find({ where: { status: 0 } });
 
+    if (!inactiveUsers){
+      return res.send(404).send({message: "Não há usuários inativos cadastrados"});
+    }
     return res.status(200).send({
       inactiveUsers,
     });
@@ -166,6 +188,7 @@ class UserController {
       token,
     });
   }
+
   async authenticate(req: Request, res: Response) {
     const repository = getRepository(User);
     const { email, password } = req.body;
@@ -204,34 +227,47 @@ class UserController {
 
     const user = await repository.update(id, req.body);
 
-    if( user.affected === 1) {
+    if (user.affected === 1) {
       const userUpdated = await repository.findOne(id);
       return res.json(userUpdated);
-    }    
+    }
 
-    return response.status(404).json({message: 'Usuário não encontrado'})
-  
+    return response.status(404).json({ message: 'Usuário não encontrado' });
   }
 
   async updateAddress(req: Request, res: Response) {
     const repository = getRepository(Address);
-    const userRepository = getRepository(User);
     const { uid } = req.params;
-    console.log(uid);
-    
-    const idAddress = await repository.createQueryBuilder("add").where("add.userId = :uid", {uid: uid}).getOne();
-
-    console.log(idAddress +" " + uid)
-    if(idAddress){
-      const address = await repository.update(idAddress.id, req.body);
-
-        const addressUpdated = await repository.findOne(idAddress);
-        return res.json(addressUpdated);
-      
-    }
-    return response.status(404).json({message: 'Usuário não encontrado'})
   
+    const idAddress = await repository
+      .createQueryBuilder('add')
+      .where('add.userId = :uid', { uid: uid })
+      .getOne();
+
+    if (idAddress) {
+      await repository.update(idAddress.id, req.body);
+
+      const addressUpdated = await repository.findOne(idAddress);
+      return res.json(addressUpdated);
+    }
+    return response.status(404).json({ message: 'Endereço não encontrado' });
+  }
+
+  async removeUser(req: Request, res: Response) {
+    const repository = getRepository(User);
+    const { id } = req.params;
+
+    const user = await repository.delete(id);
+
+    if (user.affected === 1) {
+      const userUpdated = await repository.findOne(id);
+      return res.json({message: "Usuário removido"});
+    }
+
+    return response.status(404).json({ message: 'Usuário não encontrado' });
   }
 }
+
+
 
 export default new UserController();

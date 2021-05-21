@@ -12,8 +12,10 @@ const routes = Router();
 routes.post('/user', UserController.store);
 routes.post('/login', UserController.authenticate);
 
-
-routes.get('/donations', authMiddleware, DonationsController.listAll)
+// Donations
+routes.get('/donations', DonationsController.listAll);
+// routes.get('/donations/:id', DonationsController.getDonations);
+routes.post('/donations', DonationsController.store);
 
 // routes.post('/auth', UserController.authenticate);
 // routes.get('/users', authMiddleware, UserController.index);

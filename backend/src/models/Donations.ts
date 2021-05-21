@@ -13,7 +13,7 @@ import {
   OneToOne
 } from 'typeorm';
 
-@Entity('requests')
+@Entity('donations')
 export default class Donations {
 
   @PrimaryGeneratedColumn('increment') 
@@ -40,6 +40,5 @@ export default class Donations {
   @ManyToOne(()=> User, user => user.requestDonor)
   @JoinColumn()
   donor: User;
-
 
 }

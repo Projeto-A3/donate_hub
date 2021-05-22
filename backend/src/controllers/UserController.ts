@@ -59,18 +59,6 @@ class UserController {
     });
   }
 
-  async listAdmin(req: Request, res: Response) {
-    const repository = getRepository(User);
-    const admins = await repository.find({ where: { type: 'admin' } });
-
-    if (!admins){
-      return res.send(404).send({message: "Não há administradores cadastrados"});
-    }
-    return res.status(200).send({
-      admins,
-    });
-  }
-
   async listDonee(req: Request, res: Response) {
     const repository = getRepository(User);
     const donees = await repository.find({ where: { type: 'donatario' } });
@@ -137,6 +125,10 @@ class UserController {
     const userExists = await repository.findOne({ email });
     if (userExists) {
       return res.status(409).send({ message: 'Usuário já existe' });
+    }
+    const cpfExists = await repository.findOne({ cpf_cnpj });
+    if (cpfExists) {
+      return res.status(409).send({ message: 'CPF/CNPJ já existe' });
     }
 
     const user = repository.create({
@@ -223,12 +215,12 @@ class UserController {
   //Update
   async updateUser(req: Request, res: Response) {
     const repository = getRepository(User);
-    const { id } = req.params;
-
-    const user = await repository.update(id, req.body);
+    const  id = req.userId;
+    console.log(id)
+    const user = await repository.update(id as string, req.body);
 
     if (user.affected === 1) {
-      const userUpdated = await repository.findOne(id);
+      const userUpdated = await repository.findOne(id as string);
       return res.json(userUpdated);
     }
 
@@ -237,7 +229,7 @@ class UserController {
 
   async updateAddress(req: Request, res: Response) {
     const repository = getRepository(Address);
-    const { uid } = req.params;
+    const  uid  = req.userId as string;
   
     const idAddress = await repository
       .createQueryBuilder('add')
@@ -255,7 +247,7 @@ class UserController {
 
   async removeUser(req: Request, res: Response) {
     const repository = getRepository(User);
-    const { id } = req.params;
+    const  id  = req.userId as string;
 
     const user = await repository.delete(id);
 

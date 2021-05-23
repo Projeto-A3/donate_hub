@@ -2,6 +2,7 @@ import { Router } from 'express';
 import UserController from '@controllers/UserController';
 import DonationsController from '@controllers/DonationsController'
 import authMiddleware from '@middlewares/authMiddleware';
+import AdminController from '@controllers/AdminController';
 
 const routes = Router();
 
@@ -13,29 +14,33 @@ routes.post('/user', UserController.store);
 routes.post('/login', UserController.authenticate);
 
 // Donations
-routes.get('/donations', DonationsController.listAll);
 // routes.get('/donations/:id', DonationsController.getDonations);
 routes.post('/donations', DonationsController.store);
+routes.get('/donations', DonationsController.listAll)
+//routes.get('/donations/:id', DonationsController.listOne)
 
-// routes.post('/auth', UserController.authenticate);
-// routes.get('/users', authMiddleware, UserController.index);
+ //routes.post('/auth', UserController.authenticate);
+//routes.get('/users', authMiddleware, UserController.index);
 
 //listagem de usuários
-// routes.get('/usersList', UserController.listAll);
-// routes.get('/adminsList', UserController.listAdmin);
-// routes.get('/doneesList', UserController.listDonee);
-// routes.get('/donorsList', UserController.listDonor);
+routes.get('/usersList', authMiddleware, UserController.listAll);
+routes.get('/doneesList', authMiddleware, UserController.listDonee);
+routes.get('/donorsList', authMiddleware, UserController.listDonor);
 
 //busca de usuários via atributo
-// routes.post('/findByEmail', UserController.findByEmail);
-// routes.post('/findByCode', UserController.findByCode);
+routes.post('/findByEmail', authMiddleware, UserController.findByEmail);
+routes.post('/findByCode', authMiddleware, UserController.findByCode);
 
 //alteração de usuário e endereço
-// routes.put('/user/:id', UserController.updateUser);
-// routes.put('/user/address/:uid', UserController.updateAddress);
+routes.put('/user', authMiddleware, UserController.updateUser);
+routes.put('/user/address', authMiddleware, UserController.updateAddress);
 
 //remoção de usuário e endereço
-// routes.delete('/user/:id', UserController.removeUser);
-//routes.delete('/user/:id', UserController.removeAddresses);
+routes.delete('/user', authMiddleware, UserController.removeUser);
+
+// Admins
+routes.post('/admin', AdminController.store);
+routes.post('/loginAdmin', AdminController.authenticate);
+
 
 export default routes;

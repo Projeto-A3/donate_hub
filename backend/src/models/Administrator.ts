@@ -1,8 +1,12 @@
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
+import bcrypt from 'bcrypt';
 
 export enum Types {
   doador = 'doador',
@@ -17,12 +21,23 @@ export default class User {
   id: number; 
 
   @Column()
+  name: string;
+
+  @Column()
+  surname: string;
+
+  @Column()
   email: string;
 
   @Column()
   password: string;
 
-  @Column({type:'enum', enum: Types, default: Types.doador})
-  type: string = Types.doador;
+  @Column()
+  type: string;
 
+  @BeforeInsert()
+  @BeforeUpdate()
+  hashPassword(): void {
+    this.password = bcrypt.hashSync(this.password, 8);
+  }
 }

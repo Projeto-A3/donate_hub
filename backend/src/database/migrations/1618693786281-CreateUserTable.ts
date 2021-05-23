@@ -39,6 +39,7 @@ export default class CreateUserTable1618693786281
             name: 'cpf_cnpj',
             type: 'varchar',
             isNullable: false,
+            isUnique: true,
           },
           {
             name: 'phone',

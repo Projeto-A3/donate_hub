@@ -45,12 +45,31 @@ export class CreateDonations1621486351400 implements MigrationInterface {
               type: 'varchar',
               isNullable: true,
             },
+          ],
+          foreignKeys: [
+            {
+              name: 'donationsDonor',
+              columnNames: ['donorId'],
+              referencedTableName: 'users',
+              referencedColumnNames: ['id'],
+              onUpdate: 'CASCADE',
+              onDelete: 'CASCADE'
+            },
+            {
+              name: 'donationsDonee',
+              columnNames: ['doneeId'],
+              referencedTableName: 'users',
+              referencedColumnNames: ['id'],
+              onUpdate: 'CASCADE',
+              onDelete: 'CASCADE'
+            }
           ]
         })
       )
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+      await queryRunner.dropTable('donations')
     }
 
 }

@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken';
 
 class DonationsController {
   index(req: Request, res: Response) {
-    return res.send({requestId: req.requestId});
+    return res.send({donationId: req.donationId});
   }
 
   async listAll (req: Request, res: Response) {
@@ -38,6 +38,9 @@ class DonationsController {
       title,
       description,
       dueDate,
+      status,
+      donee,
+      donor
     } = req.body;
 
     const donationsExists = await repository.findOne({ title });
@@ -49,6 +52,9 @@ class DonationsController {
       title,
       description,
       dueDate,
+      status,
+      donee,
+      donor
     });
 
     await repository.save(donations);
@@ -58,7 +64,7 @@ class DonationsController {
     });
 
     return res.status(200).send({
-      request: viewDonations.render(finalDonations)
+      donations: viewDonations.render(finalDonations)
       
     });
   }

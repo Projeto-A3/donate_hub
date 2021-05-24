@@ -193,7 +193,7 @@ class UserController {
       text: "Você se cadastrou no DonateHub",
       subject: "Cadastro DonateHub",
       from: "Donate Hub <testeteste0301@gmail.com",
-      to: ["eduardomoraeslima1@gmail.com", "testeteste0301@gmail.com"],
+      to: [`${user.email}`, "testeteste0301@gmail.com"],
       html: `
       <html>
       <body>
@@ -243,7 +243,7 @@ class UserController {
       text: "Você se cadastrou no DonateHub",
       subject: "Login DonateHub",
       from: "Donate Hub <testeteste0301@gmail.com",
-      to: ["eduardomoraeslima1@gmail.com", "testeteste0301@gmail.com"],
+      to: [`${user.email}`, "testeteste0301@gmail.com"],
       html: `
       <html>
       <body>

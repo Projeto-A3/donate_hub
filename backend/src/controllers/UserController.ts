@@ -7,6 +7,20 @@ import authConfig from '@config/auth';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+const nodemailer = require('nodemailer');
+const SMTP_CONFIG = require('@config/smtp');
+const transporter = nodemailer.createTransport({
+  host: SMTP_CONFIG.host,
+  port: SMTP_CONFIG.port,
+  secure: false,
+  auth: {
+    user: SMTP_CONFIG.user,
+    pass: SMTP_CONFIG.pass,
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
 const generateToken = (user: User) => {
   const { secret, expiresIn } = authConfig;
   return jwt.sign({ id: user.id }, secret, { expiresIn });
@@ -175,9 +189,28 @@ class UserController {
       relations: ['address'],
     });
 
+    const mailSent = transporter.sendMail({
+      text: "Você se cadastrou no DonateHub",
+      subject: "Cadastro DonateHub",
+      from: "Donate Hub <testeteste0301@gmail.com",
+      to: ["eduardomoraeslima1@gmail.com", "testeteste0301@gmail.com"],
+      html: `
+      <html>
+      <body>
+        <strong>${user.name}, seu cadastro foi realizado com sucesso!   </strong></br>
+      </body>
+      </html> 
+      `,
+    }).then((info: any) =>{
+        res.send(mailSent)
+    }).catch((error: any) =>{
+      res.send(error);  
+    });
+    
     return res.status(200).send({
       user: viewUser.render(finalUser),
       token,
+      mailSent
     });
   }
 
@@ -206,6 +239,23 @@ class UserController {
     */
     const token = jwt.sign({ id: user.id }, 'secret');
 
+    const mailSent = transporter.sendMail({
+      text: "Você se cadastrou no DonateHub",
+      subject: "Login DonateHub",
+      from: "Donate Hub <testeteste0301@gmail.com",
+      to: ["eduardomoraeslima1@gmail.com", "testeteste0301@gmail.com"],
+      html: `
+      <html>
+      <body>
+        <strong>${user.name}, seu login foi realizado com sucesso!   </strong></br>
+      </body>
+      </html> 
+      `,
+    }).then((info: any) =>{
+        res.send(info)
+    }).catch((error: any) =>{
+      res.send(error);  
+    });
     return res.json({
       user: viewUser.render(user),
       token,

@@ -5,11 +5,24 @@ import authMiddleware from '@middlewares/authMiddleware';
 import AdminController from '@controllers/AdminController';
 
 const routes = Router();
+/*const nodemailer = require('nodemailer');
+const SMTP_CONFIG = require('@config/smtp');
+const transporter = nodemailer.createTransport({
+  host: SMTP_CONFIG.host,
+  port: SMTP_CONFIG.port,
+  secure: false,
+  auth: {
+    user: SMTP_CONFIG.user,
+    pass: SMTP_CONFIG.pass,
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
 
 /**
  * USERS
  */
-
 routes.post('/user', UserController.store);
 routes.post('/login', UserController.authenticate);
 

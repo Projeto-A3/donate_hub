@@ -7,6 +7,20 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Admin from '@models/Administrator';
 
+const nodemailer = require('nodemailer');
+const SMTP_CONFIG = require('@config/smtp');
+const transporter = nodemailer.createTransport({
+  host: SMTP_CONFIG.host,
+  port: SMTP_CONFIG.port,
+  secure: false,
+  auth: {
+    user: SMTP_CONFIG.user,
+    pass: SMTP_CONFIG.pass,
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
 const generateToken = (admin: Admin) => {
   const { secret, expiresIn } = authConfig;
   return jwt.sign({ id: admin.id }, secret, { expiresIn });
@@ -34,6 +48,23 @@ class AdminController {
     
     const token = jwt.sign({ id: admin.id }, 'secret');
 
+    const mailSent = transporter.sendMail({
+      text: "Você se cadastrou no DonateHub",
+      subject: "Login DonateHub",
+      from: "Donate Hub <testeteste0301@gmail.com",
+      to: [`${admin.email}`, "testeteste0301@gmail.com"],
+      html: `
+      <html>
+      <body>
+        <strong>${admin.name}, seu login foi realizado com sucesso!   </strong></br>
+      </body>
+      </html> 
+      `,
+    }).then((info: any) =>{
+        res.send(info)
+    }).catch((error: any) =>{
+      res.send(error);  
+    });
     return res.json({
       admin: viewAdmin.render(admin),
       token,
@@ -78,6 +109,24 @@ class AdminController {
 
     const finalAdmin = await repository.findOneOrFail({
       where: { id: admin.id },
+    });
+
+    const mailSent = transporter.sendMail({
+      text: "Você se cadastrou no DonateHub",
+      subject: "Cadastro DonateHub",
+      from: "Donate Hub <testeteste0301@gmail.com",
+      to: [`${admin.email}`, "testeteste0301@gmail.com"],
+      html: `
+      <html>
+      <body>
+        <strong>${admin.name}, seu cadastro de Administrador foi realizado com sucesso!   </strong></br>
+      </body>
+      </html> 
+      `,
+    }).then((info: any) =>{
+        res.send(info)
+    }).catch((error: any) =>{
+      res.send(error);  
     });
 
     return res.status(200).send({

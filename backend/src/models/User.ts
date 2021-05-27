@@ -60,7 +60,7 @@ export default class User {
   @OneToOne(()=> Request, request => request.donee)
   requestDonee: Request;
 
-  @OneToOne(()=> Request, request => request.donor)
+  @OneToMany(()=> Request, request => request.donor)
   requestDonor: Request;
   //@OneToOne(()=> Request, request => request.donor)
   //requestDonor: Request;

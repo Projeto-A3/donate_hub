@@ -38,7 +38,6 @@ export default class Donations {
 
   
   @ManyToOne(()=> User, user => user.requestDonor)
-  @JoinColumn()
   donor: User;
 
 }

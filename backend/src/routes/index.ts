@@ -28,7 +28,7 @@ routes.post('/login', UserController.authenticate);
 
 // Donations
 // routes.get('/donations/:id', DonationsController.getDonations);
-routes.post('/donations', DonationsController.store);
+routes.post('/donations',authMiddleware, DonationsController.store);
 routes.get('/donations', DonationsController.listAll)
 //routes.get('/donations/:id', DonationsController.listOne)
 
@@ -54,6 +54,7 @@ routes.delete('/user', authMiddleware, UserController.removeUser);
 // Admins
 routes.post('/admin', AdminController.store);
 routes.post('/loginAdmin', AdminController.authenticate);
-
+routes.put('/toApprove', AdminController.toApprove);
+routes.put('/approve/:id', AdminController.approve);
 
 export default routes;

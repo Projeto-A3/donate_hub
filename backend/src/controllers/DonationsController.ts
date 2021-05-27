@@ -1,3 +1,4 @@
+import User from '@models/User';
 import { getRepository, createConnection } from 'typeorm';
 import { Request, Response } from 'express';
 import Donations from '@models/Donations';
@@ -33,31 +34,37 @@ class DonationsController {
 
   async store(req: Request, res: Response) {
     const repository = getRepository(Donations);
+    const userRepository = getRepository(User);
+    let { title, description, dueDate } = req.body;
 
-    const { title, description, dueDate, status, donee, donor } = req.body;
+   // const donee = userRepo.create({
+    //  id: 'cf09bf21-d53b-48ea-9fa5-60413a41c2bd',
+    //});
 
-    const donationsExists = await repository.findOne({ title });
-    if (donationsExists) {
-      return res.status(409).send({ message: 'Solicitação já realizada' });
+    const donee = userRepository.create({
+      id: req.userId as string,
+    });
+    const donationExists = await repository.findOne({ where: {doneeId:donee.id}});
+    if (donationExists) {
+      return res.status(409).send({ message: 'Usuário já tem um pedido cadastrado' });
     }
-
-    const donations = repository.create({
+    let donations = repository.create({
       title,
       description,
       dueDate,
-      status,
       donee,
-      donor,
     });
-
+  
     await repository.save(donations);
 
     const finalDonations = await repository.findOneOrFail({
       where: { id: donations.id },
+      relations: ['donee'],
     });
 
     return res.status(200).send({
       donations: viewDonations.render(finalDonations),
+      finalDonations,
     });
   }
 
@@ -78,7 +85,7 @@ class DonationsController {
 
   //Delete
   async removeDonations(req: Request, res: Response) {
-    const repository = getRepository(Donations); 
+    const repository = getRepository(Donations);
     const id = req.donationId as string;
 
     const donations = await repository.delete(id);

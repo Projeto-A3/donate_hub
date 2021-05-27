@@ -25,8 +25,7 @@ export default {
       title: donation.title,
       description: donation.description,
       status: donation.status,
-      donee: donation.donee,
-      donor: user_view.render(donation.donor)
+      donee: donation.donee
     };
   },
   renderMany (donations: Donations[]) {

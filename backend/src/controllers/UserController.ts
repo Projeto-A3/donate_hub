@@ -34,7 +34,10 @@ class UserController {
   async findByEmail(req: Request, res: Response) {
     const repository = getRepository(User);
     const { email } = req.body;
-    const user = await repository.findOne({ email }, {relations: ['address']});
+    const user = await repository.findOne(
+      { email },
+      { relations: ['address'] },
+    );
 
     if (!user) {
       return res
@@ -45,7 +48,7 @@ class UserController {
       user,
     });
   }
-  
+
   //Busca por CPF ou CNPJ
   async findByCode(req: Request, res: Response) {
     const repository = getRepository(User);
@@ -65,8 +68,8 @@ class UserController {
   async listAll(req: Request, res: Response) {
     const repository = getRepository(User);
     const savedUsers = await repository.find({});
-    if (!savedUsers){
-      return res.send(404).send({message: "Não há usuários cadastrados"});
+    if (!savedUsers) {
+      return res.send(404).send({ message: 'Não há usuários cadastrados' });
     }
     return res.status(200).send({
       savedUsers,
@@ -77,8 +80,8 @@ class UserController {
     const repository = getRepository(User);
     const donees = await repository.find({ where: { type: 'donatario' } });
 
-    if (!donees){
-      return res.send(404).send({message: "Não há donatarios cadastrados"});
+    if (!donees) {
+      return res.send(404).send({ message: 'Não há donatarios cadastrados' });
     }
     return res.status(200).send({
       donees,
@@ -89,8 +92,8 @@ class UserController {
     const repository = getRepository(User);
     const donors = await repository.find({ where: { type: 'doador' } });
 
-    if (!donors){
-      return res.send(404).send({message: "Não há doadores cadastrados"});
+    if (!donors) {
+      return res.send(404).send({ message: 'Não há doadores cadastrados' });
     }
     return res.status(200).send({
       donors,
@@ -101,8 +104,10 @@ class UserController {
     const repository = getRepository(User);
     const activeUsers = await repository.find({ where: { status: 1 } });
 
-    if (!activeUsers){
-      return res.send(404).send({message: "Não há usuários ativos cadastrados"});
+    if (!activeUsers) {
+      return res
+        .send(404)
+        .send({ message: 'Não há usuários ativos cadastrados' });
     }
     return res.status(200).send({
       activeUsers,
@@ -113,8 +118,10 @@ class UserController {
     const repository = getRepository(User);
     const inactiveUsers = await repository.find({ where: { status: 0 } });
 
-    if (!inactiveUsers){
-      return res.send(404).send({message: "Não há usuários inativos cadastrados"});
+    if (!inactiveUsers) {
+      return res
+        .send(404)
+        .send({ message: 'Não há usuários inativos cadastrados' });
     }
     return res.status(200).send({
       inactiveUsers,
@@ -189,28 +196,31 @@ class UserController {
       relations: ['address'],
     });
 
-    const mailSent = transporter.sendMail({
-      text: "Você se cadastrou no DonateHub",
-      subject: "Cadastro DonateHub",
-      from: "Donate Hub <testeteste0301@gmail.com",
-      to: [`${user.email}`, "testeteste0301@gmail.com"],
-      html: `
+    const mailSent = transporter
+      .sendMail({
+        text: 'Você se cadastrou no DonateHub',
+        subject: 'Cadastro DonateHub',
+        from: 'Donate Hub <testeteste0301@gmail.com',
+        to: [`${user.email}`, 'testeteste0301@gmail.com'],
+        html: `
       <html>
       <body>
         <strong>${user.name}, seu cadastro foi realizado com sucesso!   </strong></br>
       </body>
       </html> 
       `,
-    }).then((info: any) =>{
-        res.send(mailSent)
-    }).catch((error: any) =>{
-      res.send(error);  
-    });
-    
+      })
+      .then((info: any) => {
+        res.send(mailSent);
+      })
+      .catch((error: any) => {
+        res.send(error);
+      });
+
     return res.status(200).send({
       user: viewUser.render(finalUser),
       token,
-      mailSent
+      mailSent,
     });
   }
 
@@ -239,23 +249,26 @@ class UserController {
     */
     const token = jwt.sign({ id: user.id }, 'secret');
 
-    const mailSent = transporter.sendMail({
-      text: "Você se cadastrou no DonateHub",
-      subject: "Login DonateHub",
-      from: "Donate Hub <testeteste0301@gmail.com",
-      to: [`${user.email}`, "testeteste0301@gmail.com"],
-      html: `
+    const mailSent = transporter
+      .sendMail({
+        text: 'Você se cadastrou no DonateHub',
+        subject: 'Login DonateHub',
+        from: 'Donate Hub <testeteste0301@gmail.com',
+        to: [`${user.email}`, 'testeteste0301@gmail.com'],
+        html: `
       <html>
       <body>
         <strong>${user.name}, seu login foi realizado com sucesso!   </strong></br>
       </body>
       </html> 
       `,
-    }).then((info: any) =>{
-        res.send(info)
-    }).catch((error: any) =>{
-      res.send(error);  
-    });
+      })
+      .then((info: any) => {
+        res.send(info);
+      })
+      .catch((error: any) => {
+        res.send(error);
+      });
     return res.json({
       user: viewUser.render(user),
       token,
@@ -265,8 +278,8 @@ class UserController {
   //Update
   async updateUser(req: Request, res: Response) {
     const repository = getRepository(User);
-    const  id = req.userId;
-    console.log(id)
+    const id = req.userId;
+    console.log(id);
     const user = await repository.update(id as string, req.body);
 
     if (user.affected === 1) {
@@ -279,8 +292,8 @@ class UserController {
 
   async updateAddress(req: Request, res: Response) {
     const repository = getRepository(Address);
-    const  uid  = req.userId as string;
-  
+    const uid = req.userId as string;
+
     const idAddress = await repository
       .createQueryBuilder('add')
       .where('add.userId = :uid', { uid: uid })
@@ -297,19 +310,17 @@ class UserController {
 
   async removeUser(req: Request, res: Response) {
     const repository = getRepository(User);
-    const  id  = req.userId as string;
+    const id = req.userId as string;
 
     const user = await repository.delete(id);
 
     if (user.affected === 1) {
       const userUpdated = await repository.findOne(id);
-      return res.json({message: "Usuário removido"});
+      return res.json({ message: 'Usuário removido' });
     }
 
     return response.status(404).json({ message: 'Usuário não encontrado' });
   }
 }
-
-
 
 export default new UserController();

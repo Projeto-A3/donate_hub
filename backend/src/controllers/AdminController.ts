@@ -6,7 +6,7 @@ import authConfig from '@config/auth';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Admin from '@models/Administrator';
-
+import Donations from '@models/Donations';
 const nodemailer = require('nodemailer');
 const SMTP_CONFIG = require('@config/smtp');
 const transporter = nodemailer.createTransport({
@@ -134,6 +134,30 @@ class AdminController {
       token,
     });
   }
+
+  async toApprove(req: Request, res: Response) {
+    const repository = getRepository(Donations);
+    const donationsList = await repository.find({where :{ status: 0}});
+    if (!donationsList){
+      return res.send(404).send({message: "Não há pedidos pendentes de aprovação"});
+    }
+    return res.status(200).send({
+      donationsList,
+    });
+  }
+
+  async approve(req:Request, res: Response) {
+    const repository = getRepository(Donations);
+  
+    const donationId = req.params as unknown as number ;
+  
+
+    const donation = await repository.update(donationId, {status:0})
+    console.log(donationId)
+    return res.send(donation)
+    
+  }
+
 }
 
 export default new AdminController

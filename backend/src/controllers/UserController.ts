@@ -27,105 +27,16 @@ const generateToken = (user: User) => {
 };
 
 class UserController {
-  index(req: Request, res: Response) {
-    return res.send({ userId: req.userId });
-  }
-
-  async findByEmail(req: Request, res: Response) {
+  async index(req: Request, res: Response) {
+    const id = req.userId
     const repository = getRepository(User);
-    const { email } = req.body;
-    const user = await repository.findOne(
-      { email },
-      { relations: ['address'] },
-    );
-
-    if (!user) {
-      return res
-        .status(404)
-        .send({ message: 'Email de usuário não encontrado' });
+    const user = await repository.findOne({ where: { id }, relations: ['address'] })
+    if(!user) {
+      return res.status(404).send({ message: 'Usuário não encontrado'})
     }
     return res.status(200).send({
-      user,
-    });
-  }
-
-  //Busca por CPF ou CNPJ
-  async findByCode(req: Request, res: Response) {
-    const repository = getRepository(User);
-    const { cpf_cnpj } = req.body;
-    const user = await repository.findOne({ cpf_cnpj });
-
-    if (!user) {
-      return res
-        .status(404)
-        .send({ message: 'Cpf ou cnpj de usuário não encontrado' });
-    }
-    return res.status(200).send({
-      user,
-    });
-  }
-
-  async listAll(req: Request, res: Response) {
-    const repository = getRepository(User);
-    const savedUsers = await repository.find({});
-    if (!savedUsers) {
-      return res.send(404).send({ message: 'Não há usuários cadastrados' });
-    }
-    return res.status(200).send({
-      savedUsers,
-    });
-  }
-
-  async listDonee(req: Request, res: Response) {
-    const repository = getRepository(User);
-    const donees = await repository.find({ where: { type: 'donatario' } });
-
-    if (!donees) {
-      return res.send(404).send({ message: 'Não há donatarios cadastrados' });
-    }
-    return res.status(200).send({
-      donees,
-    });
-  }
-
-  async listDonor(req: Request, res: Response) {
-    const repository = getRepository(User);
-    const donors = await repository.find({ where: { type: 'doador' } });
-
-    if (!donors) {
-      return res.send(404).send({ message: 'Não há doadores cadastrados' });
-    }
-    return res.status(200).send({
-      donors,
-    });
-  }
-
-  async listActive(req: Request, res: Response) {
-    const repository = getRepository(User);
-    const activeUsers = await repository.find({ where: { status: 1 } });
-
-    if (!activeUsers) {
-      return res
-        .send(404)
-        .send({ message: 'Não há usuários ativos cadastrados' });
-    }
-    return res.status(200).send({
-      activeUsers,
-    });
-  }
-
-  async listInactive(req: Request, res: Response) {
-    const repository = getRepository(User);
-    const inactiveUsers = await repository.find({ where: { status: 0 } });
-
-    if (!inactiveUsers) {
-      return res
-        .send(404)
-        .send({ message: 'Não há usuários inativos cadastrados' });
-    }
-    return res.status(200).send({
-      inactiveUsers,
-    });
+      user: viewUser.render(user)
+    })
   }
 
   async store(req: Request, res: Response) {
@@ -279,15 +190,21 @@ class UserController {
   async updateUser(req: Request, res: Response) {
     const repository = getRepository(User);
     const id = req.userId;
-    console.log(id);
-    const user = await repository.update(id as string, req.body);
+    const { address, phone, dependents } = req.body
+    
+    const user = await repository.findOne({ where: { id }})
 
-    if (user.affected === 1) {
-      const userUpdated = await repository.findOne(id as string);
-      return res.json(userUpdated);
+    if(!user) {
+      return res.status(404).send({ message: 'Usuário não encontrado' })
     }
 
-    return response.status(404).json({ message: 'Usuário não encontrado' });
+    const updateUser = await repository.update(id as string, { address, phone, dependents });
+    
+    if (updateUser.affected === 1) {
+      return res.status(200).json({ message: 'Dados atualizados com sucesso!' });
+    }
+
+    return response.status(400).json({ message: 'Usuário não pode atualizar os dados' });
   }
 
   async updateAddress(req: Request, res: Response) {

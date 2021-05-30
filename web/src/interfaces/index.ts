@@ -43,3 +43,14 @@ export interface Viacep {
   uf: string
   erro?: boolean
 }
+
+export interface ICardDonation {
+  id?: number
+  title: string
+  description: string
+  status: boolean
+  name?: string
+  donor?: string
+  contact?: string
+  editor?: boolean
+}

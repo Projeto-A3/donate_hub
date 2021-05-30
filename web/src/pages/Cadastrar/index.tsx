@@ -4,7 +4,7 @@ import { FiChevronDown, FiEye, FiEyeOff } from 'react-icons/fi'
 import { Formik, FormikHelpers } from 'formik'
 import { UserRegister } from 'interfaces'
 import Inputmask from 'components/Inputmask'
-import { ufs } from 'utils'
+import { ufs, unMask } from 'utils'
 import viacep from 'services/viacep'
 import { useAuth } from 'contexts/auth'
 
@@ -47,6 +47,7 @@ const Cadastrar = () => {
     }
     actions.setSubmitting(false)
   }
+
   return (
     <section className="page-default page-cadastrar fadeIn">
       <Container>
@@ -146,7 +147,7 @@ const Cadastrar = () => {
                             }
                             type="tel"
                             name="cpf_cnpj"
-                            onChange={handleChange}
+                            onChange={e => unMask(e, handleChange)}
                             onBlur={handleBlur}
                             id="cpf_cnpj"
                             value={values.cpf_cnpj}
@@ -182,7 +183,7 @@ const Cadastrar = () => {
                             }
                             type="tel"
                             name="phone"
-                            onChange={handleChange}
+                            onChange={e => unMask(e, handleChange)}
                             onBlur={handleBlur}
                             id="phone"
                             value={values.phone}
@@ -313,7 +314,7 @@ const Cadastrar = () => {
                             mask="99999-999"
                             type="tel"
                             name="address.zipCode"
-                            onChange={handleChange}
+                            onChange={e => unMask(e, handleChange)}
                             onBlur={async e => {
                               handleBlur(e)
                               let { value } = e.target

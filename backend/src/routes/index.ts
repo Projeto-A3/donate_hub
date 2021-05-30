@@ -24,6 +24,7 @@ const transporter = nodemailer.createTransport({
  * USERS
  */
 routes.post('/user', UserController.store);
+routes.get('/user', authMiddleware, UserController.index)
 routes.post('/login', UserController.authenticate);
 
 // Donations
@@ -34,15 +35,6 @@ routes.get('/donations', DonationsController.listAll)
 
  //routes.post('/auth', UserController.authenticate);
 //routes.get('/users', authMiddleware, UserController.index);
-
-//listagem de usuários
-routes.get('/usersList', authMiddleware, UserController.listAll);
-routes.get('/doneesList', authMiddleware, UserController.listDonee);
-routes.get('/donorsList', authMiddleware, UserController.listDonor);
-
-//busca de usuários via atributo
-routes.post('/findByEmail', authMiddleware, UserController.findByEmail);
-routes.post('/findByCode', authMiddleware, UserController.findByCode);
 
 //alteração de usuário e endereço
 routes.put('/user', authMiddleware, UserController.updateUser);

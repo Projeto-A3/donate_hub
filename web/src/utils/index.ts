@@ -1,3 +1,5 @@
+import { ChangeEvent } from 'react'
+
 export const ufs = [
   'AC',
   'AL',
@@ -27,3 +29,11 @@ export const ufs = [
   'SE',
   'TO'
 ]
+
+export function unMask<T extends ChangeEvent<HTMLInputElement>>(
+  e: T,
+  handleChange: (e: T) => void
+) {
+  e.target.value = e.target.value.replace(/[^0-9]/g, '')
+  handleChange(e)
+}

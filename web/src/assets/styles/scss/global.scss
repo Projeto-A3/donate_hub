@@ -6,6 +6,10 @@
 
 // Components
 @import "./components/navigation.scss";
+@import "./components/cardDonation.scss";
+
+// Pages
+@import "./pages/dashboard.scss";
 
 html, body {
   background-color: theme-color('light');

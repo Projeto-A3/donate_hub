@@ -29,8 +29,10 @@ routes.post('/login', UserController.authenticate);
 
 // Donations
 // routes.get('/donations/:id', DonationsController.getDonations);
-routes.post('/donations',authMiddleware, DonationsController.store);
-routes.get('/donations', DonationsController.listAll)
+routes.post('/donations', authMiddleware, DonationsController.store);
+routes.get('/donations', authMiddleware, DonationsController.list);
+routes.get('/donations/all', authMiddleware, DonationsController.listAll)
+routes.put('/donations/:id', authMiddleware, DonationsController.storeDoner)
 //routes.get('/donations/:id', DonationsController.listOne)
 
  //routes.post('/auth', UserController.authenticate);

@@ -24,8 +24,7 @@ export default {
       id: donation.id,
       title: donation.title,
       description: donation.description,
-      status: donation.status,
-      donee: donation.donee
+      status: donation.status
     };
   },
   renderMany (donations: Donations[]) {

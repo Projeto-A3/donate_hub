@@ -13,6 +13,20 @@ class DonationsController {
     return res.send({ donationId: req.donationId });
   }
 
+  async list (req: Request, res: Response) {
+    const userRepository = getRepository(User)
+    const repository = getRepository(Donations);
+    const user = await userRepository.findOne({ where: { id: req.userId } })
+
+    if(!user) {
+      return res.status(200).send({ message: 'Usuário não encontrado' })
+    }
+
+    const donations = user.type.includes('doador') ? await repository.find({ where: { donor: user }}) : await repository.find({ where: { donee: user }})
+
+    return res.status(200).send(donations)
+  }
+
   async listAll(req: Request, res: Response) {
     const repository = getRepository(Donations);
     const donationsList = await repository.find();
@@ -32,40 +46,92 @@ class DonationsController {
     
   }*/
 
+  async storeDoner (req: Request, res: Response ) {
+    const userRepository = getRepository(User);
+    const repository = getRepository(Donations);
+    const { id } = req.params
+    const { userId } = req
+
+    const donation = await repository.findOne({ where: { id }})
+    const user = await userRepository.findOne({ where: { id: userId }})
+    
+    if(!user || user.type.includes('donatario') || !donation) {
+      return res.status(404).send({ message: 'Erro ao atualizar' })
+    }
+
+    const updateDonation = await repository.update(id, { donor: user })
+
+    if(updateDonation.affected === 1) {
+      return res.status(200).send({ message: 'Obrigado por ajudar o próximo' })
+    }
+
+    return res.status(404).send({ message: 'Erro ao atualizar' })
+  }
+
   async store(req: Request, res: Response) {
     const repository = getRepository(Donations);
     const userRepository = getRepository(User);
     let { title, description, dueDate } = req.body;
 
+    const user = await userRepository.findOne({ where: { id: req.userId }, relations: ['requestDonee']})
+    
+    if(!user) {
+      return res.status(200).send({ message: 'Usuário não encontrado' })
+    }
+
+    if(user.requestDonee) {
+      return res.status(409).send({ message: 'Já existe uma solicitação em aberto' })
+    }
+
+    const donations = repository.create({
+      title,
+      description,
+      dueDate,
+      donee: user,
+    });
+
+    await repository.save(donations);
+    
+    return res.status(200).send({ message: 'Aguarde a confirmação da sua solicitação' })
+
+    // let donations = repository.create({
+    //   title,
+    //   description,
+    //   dueDate,
+    //   donee: user,
+    // });
+
+    // await repository.save(donations);
+
    // const donee = userRepo.create({
     //  id: 'cf09bf21-d53b-48ea-9fa5-60413a41c2bd',
     //});
 
-    const donee = userRepository.create({
-      id: req.userId as string,
-    });
-    const donationExists = await repository.findOne({ where: {doneeId:donee.id}});
-    if (donationExists) {
-      return res.status(409).send({ message: 'Usuário já tem um pedido cadastrado' });
-    }
-    let donations = repository.create({
-      title,
-      description,
-      dueDate,
-      donee,
-    });
+    // const donee = userRepository.create({
+    //   id: req.userId as string,
+    // });
+    // const donationExists = await repository.findOne({ where: {doneeId:donee.id}});
+    // if (donationExists) {
+    //   return res.status(409).send({ message: 'Usuário já tem um pedido cadastrado' });
+    // }
+    // let donations = repository.create({
+    //   title,
+    //   description,
+    //   dueDate,
+    //   donee,
+    // });
   
-    await repository.save(donations);
+    // await repository.save(donations);
 
-    const finalDonations = await repository.findOneOrFail({
-      where: { id: donations.id },
-      relations: ['donee'],
-    });
+    // const finalDonations = await repository.findOneOrFail({
+    //   where: { id: donations.id },
+    //   relations: ['donee'],
+    // });
 
-    return res.status(200).send({
-      donations: viewDonations.render(finalDonations),
-      finalDonations,
-    });
+    // return res.status(200).send({
+    //   donations: viewDonations.render(finalDonations),
+    //   finalDonations,
+    // });
   }
 
   //Update

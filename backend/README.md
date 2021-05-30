@@ -14,4 +14,5 @@ DB_DATABASE = string
 
 MAILER_EMAIL = string
 MAILER_PASSWORD = string
+MAILER_SENT_EMAIL = boolean
 ```

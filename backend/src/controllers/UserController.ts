@@ -75,7 +75,6 @@ class UserController {
       dependents,
     });
     await repository.save(user);
-    const token = generateToken(user);
 
     const addressRepository = getRepository(Address);
     const {
@@ -107,31 +106,38 @@ class UserController {
       relations: ['address'],
     });
 
-    const mailSent = transporter
-      .sendMail({
-        text: 'Você se cadastrou no DonateHub',
-        subject: 'Cadastro DonateHub',
-        from: 'Donate Hub <testeteste0301@gmail.com',
-        to: [`${user.email}`, 'testeteste0301@gmail.com'],
-        html: `
-      <html>
-      <body>
-        <strong>${user.name}, seu cadastro foi realizado com sucesso!   </strong></br>
-      </body>
-      </html> 
-      `,
-      })
-      .then((info: any) => {
-        res.send(mailSent);
-      })
-      .catch((error: any) => {
-        res.send(error);
-      });
+
+    let emailSent = false
+
+    try {
+      if(JSON.parse(process.env.MAILER_SENT_EMAIL || '')) {
+        await transporter
+        .sendMail({
+          text: 'Você se cadastrou no DonateHub',
+          subject: 'Cadastro DonateHub',
+          from: `Donate Hub <${process.env.MAILER_EMAIL}>`,
+          to: [`${user.email}`, `${process.env.MAILER_EMAIL}`],
+          html: `
+        <html>
+        <body>
+          <strong>${user.name}, seu cadastro foi realizado com sucesso!</strong></br>
+        </body>
+        </html> 
+        `,
+        })
+        emailSent = true
+      }
+      
+    } catch (error) {
+      
+    }
+
+    const token = generateToken(user)
 
     return res.status(200).send({
       user: viewUser.render(finalUser),
       token,
-      mailSent,
+      emailSent
     });
   }
 
@@ -150,36 +156,29 @@ class UserController {
       return res.status(401).send({ message: 'E-mail ou senha inválidas' });
     }
 
-    /*
-    const token = generateToken(user);
-    
-    res.status(200).send({
-      user: viewUser.render(user),
-      token,
-    });
-    */
-    const token = jwt.sign({ id: user.id }, 'secret');
+    const token = generateToken(user)
 
-    const mailSent = transporter
-      .sendMail({
-        text: 'Você se cadastrou no DonateHub',
-        subject: 'Login DonateHub',
-        from: 'Donate Hub <testeteste0301@gmail.com',
-        to: [`${user.email}`, 'testeteste0301@gmail.com'],
-        html: `
-      <html>
-      <body>
-        <strong>${user.name}, seu login foi realizado com sucesso!   </strong></br>
-      </body>
-      </html> 
-      `,
-      })
-      .then((info: any) => {
-        res.send(info);
-      })
-      .catch((error: any) => {
-        res.send(error);
-      });
+    try {
+      if(JSON.parse(process.env.MAILER_SENT_EMAIL || ''))  {
+        await transporter
+        .sendMail({
+          text: 'Você se cadastrou no DonateHub',
+          subject: 'Login DonateHub',
+          from: `Donate Hub <${process.env.MAILER_EMAIL}>`,
+          to: [`${user.email}`, `${process.env.MAILER_EMAIL}`],
+          html: `
+        <html>
+        <body>
+          <strong>${user.name}, seu login foi realizado com sucesso! </strong></br>
+        </body>
+        </html> 
+        `,
+        })
+      }
+    } catch (error) {
+      
+    }
+    
     return res.json({
       user: viewUser.render(user),
       token,

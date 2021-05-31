@@ -21,11 +21,10 @@ export default function authMiddleware(
   const token = authorization.replace('Bearer', '').trim();
 
   try {
-    const data = jwt.verify(token, 'secret');
+    const data = jwt.verify(token, process.env.API_SECRET || 'secret');
     const { id } = data as TokenPayLoad;
 
     req.userId = id;
-    
     return next();
   } catch {
     return res.status(401);

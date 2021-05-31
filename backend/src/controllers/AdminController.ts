@@ -119,7 +119,7 @@ class AdminController {
       html: `
       <html>
       <body>
-        <strong>${admin.name}, seu cadastro de Administrador foi realizado com sucesso!   </strong></br>
+        <strong>${admin.name}, seu cadastro foi realizado com sucesso!   </strong></br>
       </body>
       </html> 
       `,
@@ -127,6 +127,10 @@ class AdminController {
         res.send(info)
     }).catch((error: any) =>{
       res.send(error);  
+    });
+    return res.json({
+      admin: viewAdmin.render(admin),
+      token,
     });
 
     return res.status(200).send({

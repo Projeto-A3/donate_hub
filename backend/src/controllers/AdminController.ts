@@ -156,7 +156,7 @@ class AdminController {
     const donationId = req.params as unknown as number ;
   
 
-    const donation = await repository.update(donationId, {status:0})
+    const donation = await repository.update(donationId, {status:1})
     console.log(donationId)
     return res.send(donation)
     

@@ -1,12 +1,8 @@
 import User from '@models/User';
-import { getRepository, createConnection } from 'typeorm';
+import { getRepository } from 'typeorm';
 import { Request, Response } from 'express';
 import Donations from '@models/Donations';
 import viewDonations from '@views/donations_view';
-
-import authConfig from '@config/auth';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 
 class DonationsController {
   index(req: Request, res: Response) {
@@ -15,36 +11,25 @@ class DonationsController {
 
   async list (req: Request, res: Response) {
     const userRepository = getRepository(User)
-    const repository = getRepository(Donations);
-    const user = await userRepository.findOne({ where: { id: req.userId } })
+    const user = await userRepository.findOne({ where: { id: req.userId }, relations: ['requestDonee', 'requestDonor'] })
 
     if(!user) {
       return res.status(200).send({ message: 'Usuário não encontrado' })
     }
 
-    const donations = user.type.includes('doador') ? await repository.find({ where: { donor: user }}) : await repository.find({ where: { donee: user }})
-
-    return res.status(200).send(donations)
+    return res.status(200).send({
+      data: user.type.includes('doador') ? viewDonations.renderMany(user.requestDonor) : viewDonations.render(user.requestDonee)
+    })
   }
 
   async listAll(req: Request, res: Response) {
     const repository = getRepository(Donations);
-    const donationsList = await repository.find();
+    const donationsList = await repository.find({ where: { status: 0 }, relations: ['donee']});
 
     return res.status(200).send({
-      donationsList,
+      data: viewDonations.renderMany(donationsList),
     });
   }
-
-  /*async getDonations (req: Request, res: Response){
-    const repository = getRepository(Donations);
-    const donationsId = await repository.find({where: { id: "" }});
-    
-    return res.status(200).send({
-      donationsId,
-    })
-    
-  }*/
 
   async storeDoner (req: Request, res: Response ) {
     const userRepository = getRepository(User);
@@ -92,53 +77,13 @@ class DonationsController {
 
     await repository.save(donations);
     
-    return res.status(200).send({ message: 'Aguarde a confirmação da sua solicitação' })
-
-    // let donations = repository.create({
-    //   title,
-    //   description,
-    //   dueDate,
-    //   donee: user,
-    // });
-
-    // await repository.save(donations);
-
-   // const donee = userRepo.create({
-    //  id: 'cf09bf21-d53b-48ea-9fa5-60413a41c2bd',
-    //});
-
-    // const donee = userRepository.create({
-    //   id: req.userId as string,
-    // });
-    // const donationExists = await repository.findOne({ where: {doneeId:donee.id}});
-    // if (donationExists) {
-    //   return res.status(409).send({ message: 'Usuário já tem um pedido cadastrado' });
-    // }
-    // let donations = repository.create({
-    //   title,
-    //   description,
-    //   dueDate,
-    //   donee,
-    // });
-  
-    // await repository.save(donations);
-
-    // const finalDonations = await repository.findOneOrFail({
-    //   where: { id: donations.id },
-    //   relations: ['donee'],
-    // });
-
-    // return res.status(200).send({
-    //   donations: viewDonations.render(finalDonations),
-    //   finalDonations,
-    // });
+    return res.status(200).send({ message: 'Pedido realizado com sucesso! Aguarde a confirmação da sua solicitação' })
   }
 
   //Update
   async updateDonations(req: Request, res: Response) {
     const repository = getRepository(Donations);
     const id = req.donationId;
-    console.log(id);
     const donations = await repository.update(id as string, req.body);
 
     if (donations.affected === 1) {

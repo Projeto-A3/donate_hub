@@ -48,9 +48,22 @@ export interface ICardDonation {
   id?: number
   title: string
   description: string
-  status: boolean
-  name?: string
-  donor?: string
-  contact?: string
-  editor?: boolean
+  status: number
+  donee: Pick<UserRegister, 'email' | 'phone' | 'name'>
 }
+
+export interface IUserAdminRegister {
+  name: string
+  surname: string
+  email: string
+  password: string
+  type: string
+}
+
+export interface UserAdmin {
+  user: Omit<IUserAdminRegister, 'password'>
+  token: string
+}
+export type UserAdminLogin = Pick<IUserAdminRegister, 'email' | 'password'>
+
+export type RegisterDonation = Omit<ICardDonation, 'donee' | 'status' | 'id'>

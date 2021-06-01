@@ -1,7 +1,14 @@
-import { UserRegister, UserLogin, User } from 'interfaces'
+import {
+  UserRegister,
+  UserLogin,
+  User,
+  UserAdminLogin,
+  UserAdmin
+} from 'interfaces'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router'
 import * as userApi from '../services/user'
+import * as adminApi from '../services/admin'
 
 interface AuthContextData {
   signed: boolean
@@ -11,6 +18,8 @@ interface AuthContextData {
   signIn(credentials: UserLogin): Promise<void>
   signUp(dados: UserRegister): Promise<void>
   signOut(): void
+  signInAdmin(credentials: UserAdminLogin): Promise<void>
+  userAdmin: UserAdmin | null
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
@@ -18,6 +27,7 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 export const AuthProvider: React.FC = ({ children }) => {
   const history = useHistory()
   const [user, setUser] = useState<User | null>(null)
+  const [userAdmin, setUserAdmin] = useState<UserAdmin | null>(null)
   const [loading, setLoading] = useState(true)
   const storageNames = {
     user: '@donate-hub:user',
@@ -32,6 +42,18 @@ export const AuthProvider: React.FC = ({ children }) => {
     }
     setLoading(false)
   }, [])
+
+  /**
+   * @description Login do usuário admin
+   * @param {UserAdminLogin} credentials
+   */
+  async function signInAdmin(credentials: UserAdminLogin) {
+    const response = await adminApi.signIn(credentials)
+    setUserAdmin(response)
+    localStorage.setItem(storageNames.user, JSON.stringify(response.user))
+    localStorage.setItem(storageNames.token, response.token)
+    history.push('/admin')
+  }
 
   async function signIn(credentials: UserLogin) {
     const response = await userApi.signIn(credentials)
@@ -68,7 +90,9 @@ export const AuthProvider: React.FC = ({ children }) => {
         updateLoading,
         signIn,
         signUp,
-        signOut
+        signOut,
+        signInAdmin,
+        userAdmin
       }}
     >
       {children}

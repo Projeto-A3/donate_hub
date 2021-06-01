@@ -12,9 +12,10 @@ yup.setLocale({
 export default {
   login: yup.object().shape({
     email: yup.string().required().email(),
-    password: yup
-      .string()
-      .required()
-      .min(8, ({ min }) => `Deve ter no mínimo ${min} caracteres`)
+    password: yup.string().required()
+  }),
+  registerDonation: yup.object().shape({
+    title: yup.string().required(),
+    description: yup.string().required()
   })
 }

@@ -1,33 +1,25 @@
 import Donations from '@models/Donations';
-import user_view from '@views/user_view';
 
 export default {
   render(donation: Donations) {
-   /* if(!donation.donee&& !donation.donor){
-      return { 
-        id: donation.id,
-        title: donation.title,
-        description: donation.description,
-        status: donation.status,
-      }
-    }
-    if(donation.donee&& !donation.donor){
-        return { 
-          id: donation.id,
-          title: donation.title,
-          description: donation.description,
-          status: donation.status,
-          donee: user_view.render(donation.donee)
-      }  
-    }*/
     return {
       id: donation.id,
       title: donation.title,
       description: donation.description,
-      status: donation.status
+      status: donation.status,
+      donee: donation.donee && {
+        name: donation.donee.name,
+        phone: donation.donee.phone,
+        email: donation.donee.email
+      },
+      donor: donation.donor && {
+        name: donation.donor.name,
+        phone: donation.donor.phone,
+        email: donation.donor.email
+      }
     };
   },
   renderMany (donations: Donations[]) {
     return donations.map(this.render)
-  }
+  },
 };

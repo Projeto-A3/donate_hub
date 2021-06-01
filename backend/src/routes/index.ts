@@ -46,8 +46,8 @@ routes.put('/user/address', authMiddleware, UserController.updateAddress);
 routes.delete('/user', authMiddleware, UserController.removeUser);
 
 // Admins
-routes.post('/admin', AdminController.store);
-routes.post('/loginAdmin', AdminController.authenticate);
+routes.post('/admin/login', AdminController.authenticate);
+routes.post('/admin/create', AdminController.store);
 routes.put('/toApprove', AdminController.toApprove);
 routes.put('/approve/:id', AdminController.approve);
 

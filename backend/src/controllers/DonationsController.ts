@@ -74,7 +74,11 @@ class DonationsController {
     let { title, description, dueDate } = req.body;
 
     const user = await userRepository.findOne({ where: { id: req.userId }, relations: ['requestDonee']})
+    const descExists = await userRepository.findOne({ where: { description: description }})
     
+    if(descExists){
+      return res.status(409).send({ message: 'Já existe uma solicitação com a mesma descrição!' })
+    }
     if(!user) {
       return res.status(200).send({ message: 'Usuário não encontrado' })
     }

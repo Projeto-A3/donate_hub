@@ -46,25 +46,28 @@ class AdminController {
       return res.status(401).send({ message: 'E-mail ou senha inválidas' });
     }
     
-    const token = jwt.sign({ id: admin.id }, 'secret');
+    const token = generateToken(admin)
 
-    const mailSent = transporter.sendMail({
-      text: "Você se cadastrou no DonateHub",
-      subject: "Login DonateHub",
-      from: "Donate Hub <testeteste0301@gmail.com",
-      to: [`${admin.email}`, "testeteste0301@gmail.com"],
-      html: `
-      <html>
-      <body>
-        <strong>${admin.name}, seu login foi realizado com sucesso!   </strong></br>
-      </body>
-      </html> 
-      `,
-    }).then((info: any) =>{
-        res.send(info)
-    }).catch((error: any) =>{
-      res.send(error);  
-    });
+    try {
+      if(JSON.parse(process.env.MAILER_SENT_EMAIL || 'false')) {
+        await transporter.sendMail({
+          text: "Você se cadastrou no DonateHub",
+          subject: "Login DonateHub",
+          from: `Donate Hub <${process.env.MAILER_EMAIL}>`,
+          to: [`${admin.email}`, `${process.env.MAILER_EMAIL}`],
+          html: `
+          <html>
+          <body>
+            <strong>${admin.name}, seu login foi realizado com sucesso!   </strong></br>
+          </body>
+          </html> 
+          `,
+        })
+      }
+    } catch {
+      
+    }
+
     return res.json({
       admin: viewAdmin.render(admin),
       token,
@@ -89,7 +92,6 @@ class AdminController {
      surname, 
      email,
      password,
-     type
     } = req.body;
 
     const adminExists = await repository.findOne({ email });
@@ -102,7 +104,6 @@ class AdminController {
      surname, 
      email,
      password,
-     type
     });
     await repository.save(admin);
     const token = generateToken(admin);
@@ -111,27 +112,25 @@ class AdminController {
       where: { id: admin.id },
     });
 
-    const mailSent = transporter.sendMail({
-      text: "Você se cadastrou no DonateHub",
-      subject: "Cadastro DonateHub",
-      from: "Donate Hub <testeteste0301@gmail.com",
-      to: [`${admin.email}`, "testeteste0301@gmail.com"],
-      html: `
-      <html>
-      <body>
-        <strong>${admin.name}, seu cadastro foi realizado com sucesso!   </strong></br>
-      </body>
-      </html> 
-      `,
-    }).then((info: any) =>{
-        res.send(info)
-    }).catch((error: any) =>{
-      res.send(error);  
-    });
-    return res.json({
-      admin: viewAdmin.render(admin),
-      token,
-    });
+    try {
+      if(JSON.parse(process.env.MAILER_SENT_EMAIL || 'false')) {
+        await transporter.sendMail({
+          text: "Você se cadastrou no DonateHub",
+          subject: "Cadastro DonateHub",
+          from: `Donate Hub <${process.env.MAILER_EMAIL}>`,
+          to: [`${admin.email}`, `${process.env.MAILER_EMAIL}`],
+          html: `
+          <html>
+          <body>
+            <strong>${admin.name}, seu cadastro de Administrador foi realizado com sucesso!   </strong></br>
+          </body>
+          </html> 
+          `,
+        })
+      }
+    } catch {
+      
+    }
 
     return res.status(200).send({
       admin: viewAdmin.render(finalAdmin),

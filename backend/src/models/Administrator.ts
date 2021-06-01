@@ -8,12 +8,6 @@ import {
 
 import bcrypt from 'bcrypt';
 
-export enum Types {
-  doador = 'doador',
-  donatario = 'donatario',
-  admin = 'admin'
-};
-
 @Entity('administrators')
 export default class User {
  
@@ -32,8 +26,8 @@ export default class User {
   @Column()
   password: string;
 
-  @Column()
-  type: string;
+  @Column('varchar', { default: 'admin'})
+  type: string = 'admin';
 
   @BeforeInsert()
   @BeforeUpdate()

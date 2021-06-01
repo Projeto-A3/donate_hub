@@ -1,20 +1,15 @@
 import React from 'react'
 import { ICardDonation } from 'interfaces'
-import { Link } from 'react-router-dom'
+import { Button } from 'react-bootstrap'
 
 const CardDonation: React.FC<ICardDonation> = ({
   title,
   description,
   status,
-  editor
+  donee
 }) => {
   return (
     <div className="card-donation bg-light fadeIn">
-      {editor && (
-        <span className="d-block text-right">
-          <Link to="/">Editar</Link>
-        </span>
-      )}
       <header>
         <p>
           <strong>Título: </strong>
@@ -22,17 +17,41 @@ const CardDonation: React.FC<ICardDonation> = ({
         </p>
       </header>
       <main>
-        <p>
+        <p className="mb-1">
           <strong>Descrição:</strong>
           <br />
           {description}
         </p>
-      </main>
-      <footer>
-        <p>
+        <p className="mb-1">
           <strong>Status: </strong>
           {status ? 'Fechado' : 'Em andamento'}
         </p>
+        <p className="mb-1">
+          <strong>Nome: </strong>
+          {donee.name}
+        </p>
+        <p className="mb-0">
+          <strong className="d-block">Contatos: </strong>
+          <span className="d-block">
+            Tel:{' '}
+            {donee.phone.replace(
+              donee.phone.length > 10
+                ? /(\d{2})(\d{5})(\d*)/
+                : /(\d{2})(\d{4})(\d*)/,
+              '($1) $2-$3'
+            )}
+          </span>
+          <span className="d-block">
+            E-mail: <a href={`mailto:${donee.email}`}>{donee.email}</a>
+          </span>
+        </p>
+      </main>
+      <footer>
+        <div className="text-center mt-4">
+          <Button type="button" variant="secundary">
+            Contribuir
+          </Button>
+        </div>
       </footer>
     </div>
   )

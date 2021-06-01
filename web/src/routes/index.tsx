@@ -6,9 +6,12 @@ import Cadastrar from 'pages/Cadastrar'
 import Dashboard from 'pages/Dashboard'
 import PrivateRoute from './PrivateRoute'
 import { useAuth } from 'contexts/auth'
+import AdminLogin from 'pages/Admin/Login'
+import Admin from 'pages/Admin'
+import PrivateRouteAdmin from './PrivateRouteAdmin'
 
 const Routes = () => {
-  const { signed, loading } = useAuth()
+  const { signed, loading, user } = useAuth()
   if (loading) {
     return <h1>Carregando...</h1>
   }
@@ -21,6 +24,13 @@ const Routes = () => {
         path="/dashboard"
         isAuthenticated={signed}
         component={Dashboard}
+      />
+      <Route path="/admin/login" exact component={AdminLogin} />
+      <PrivateRouteAdmin
+        path="/admin"
+        isAuthenticated={signed}
+        type={user?.user.type || ''}
+        component={Admin}
       />
     </Switch>
   )

@@ -61,7 +61,7 @@ export default class User {
   requestDonee: Request;
 
   @OneToMany(()=> Request, request => request.donor)
-  requestDonor: Request;
+  requestDonor: Request[];
   //@OneToOne(()=> Request, request => request.donor)
   //requestDonor: Request;
 

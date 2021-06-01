@@ -18,7 +18,10 @@
     font-size: calculateRem(20px);
     font-weight: 800;
   }
-  input, select {
+  textarea {
+    resize: none;
+  }
+  input, select, textarea {
     &:not([type='checkbox']) {
       border-radius: 10px;
       padding: 20px;

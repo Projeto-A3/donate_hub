@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useAuth } from 'contexts/auth'
 import { Container } from 'react-bootstrap'
 import api from 'services/api'
+import TitlePage from 'components/TitlePage'
 
 export default function DashboardHome() {
   const { user } = useAuth()
@@ -16,7 +17,7 @@ export default function DashboardHome() {
 
   return (
     <Container className="fadeIn" fluid>
-      <h1 className="font-weight-bold">Bem vindo, {user.user.name}</h1>
+      <TitlePage title={`Bem vindo, ${user.user.name}`} />
     </Container>
   )
 }

@@ -17,7 +17,7 @@ export default function Dashboard({ match }: RouteComponentProps) {
   return (
     <div className="dashboard-page">
       <nav className="bg-light">
-        <Link to="dashboard">
+        <Link to="/dashboard">
           <img src={Logo} alt="Donate Hub" title="Donate Hub" />
         </Link>
         <ul>

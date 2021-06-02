@@ -12,9 +12,8 @@ import * as adminApi from '../services/admin'
 
 interface AuthContextData {
   signed: boolean
+  signedAdmin: boolean
   user: User | null
-  loading: boolean
-  updateLoading(value: boolean): void
   signIn(credentials: UserLogin): Promise<void>
   signUp(dados: UserRegister): Promise<void>
   signOut(): void
@@ -28,19 +27,23 @@ export const AuthProvider: React.FC = ({ children }) => {
   const history = useHistory()
   const [user, setUser] = useState<User | null>(null)
   const [userAdmin, setUserAdmin] = useState<UserAdmin | null>(null)
-  const [loading, setLoading] = useState(true)
   const storageNames = {
     user: '@donate-hub:user',
-    token: '@donate-hub:token'
+    token: '@donate-hub:token',
+    userAdmin: '@donate-hub:userAdmin'
   }
 
   useEffect(() => {
     const storagedUser = localStorage.getItem(storageNames.user)
     const storagedToken = localStorage.getItem(storageNames.token)
+    const storageUserAdmin = localStorage.getItem(storageNames.userAdmin)
+
+    if (storageUserAdmin && storagedToken) {
+      setUserAdmin({ user: JSON.parse(storageUserAdmin), token: storagedToken })
+    }
     if (storagedUser && storagedToken) {
       setUser({ user: JSON.parse(storagedUser), token: storagedToken })
     }
-    setLoading(false)
   }, [])
 
   /**
@@ -50,7 +53,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   async function signInAdmin(credentials: UserAdminLogin) {
     const response = await adminApi.signIn(credentials)
     setUserAdmin(response)
-    localStorage.setItem(storageNames.user, JSON.stringify(response.user))
+    localStorage.setItem(storageNames.userAdmin, JSON.stringify(response.user))
     localStorage.setItem(storageNames.token, response.token)
     history.push('/admin')
   }
@@ -62,6 +65,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     localStorage.setItem(storageNames.token, response.token)
     history.push('/dashboard')
   }
+
   async function signUp(dados: UserRegister) {
     const resUser = await userApi.signUp(dados)
     setUser(resUser)
@@ -73,21 +77,18 @@ export const AuthProvider: React.FC = ({ children }) => {
   function signOut() {
     localStorage.removeItem(storageNames.user)
     localStorage.removeItem(storageNames.token)
+    localStorage.removeItem(storageNames.userAdmin)
     setUser(null)
+    setUserAdmin(null)
     history.push('/')
-  }
-
-  function updateLoading(value: boolean) {
-    setLoading(value)
   }
 
   return (
     <AuthContext.Provider
       value={{
         signed: !!user,
+        signedAdmin: !!userAdmin,
         user,
-        loading,
-        updateLoading,
         signIn,
         signUp,
         signOut,

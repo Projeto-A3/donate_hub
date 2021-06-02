@@ -1,0 +1,42 @@
+.admin-home-page {
+  .box {
+    display: block;
+    min-height: 120px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    margin-bottom: 1rem;
+    &.bg-1 {
+      $from: theme-color('secundary');
+      $to: lighten(theme-color('secundary'), 10);
+      background: $from;
+      background: linear-gradient(30deg, $from 0%, $to 100%);
+    }
+    &.bg-2 {
+      $from: theme-color('primary');
+      $to: lighten(theme-color('primary'), 30);
+      background: $from;
+      background: linear-gradient(30deg, $from 0%, $to 100%);
+    }
+    &.bg-3 {
+      $from: theme-color('dark');
+      $to: lighten(theme-color('dark'), 30);
+      background: $from;
+      background: linear-gradient(30deg, $from 0%, $to 100%);
+    }
+    &.bg-4 {
+      $from: darken(theme-color('light'), 20);
+      $to: darken(theme-color('light'), 50);
+      background: $from;
+      background: linear-gradient(30deg, $from 0%, $to 100%);
+    }
+    &.bg-5 {
+      $from: theme-color('cyan');
+      $to: darken(theme-color('cyan'), 15);
+      background: $from;
+      background: linear-gradient(30deg, $from 0%, $to 100%);
+    }
+  }
+
+}

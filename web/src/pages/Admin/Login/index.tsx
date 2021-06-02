@@ -30,8 +30,8 @@ export default function AdminLogin() {
               </header>
               <Formik
                 initialValues={{
-                  email: '',
-                  password: ''
+                  email: 'testeteste0301@gmail.com',
+                  password: 'teste123'
                 }}
                 onSubmit={requestLogin}
                 validationSchema={schemas.login}

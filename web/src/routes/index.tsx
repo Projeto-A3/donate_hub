@@ -11,10 +11,8 @@ import Admin from 'pages/Admin'
 import PrivateRouteAdmin from './PrivateRouteAdmin'
 
 const Routes = () => {
-  const { signed, loading, user } = useAuth()
-  if (loading) {
-    return <h1>Carregando...</h1>
-  }
+  const { signed, userAdmin, signedAdmin } = useAuth()
+
   return (
     <Switch>
       <Route path="/" exact component={Home} />
@@ -28,8 +26,8 @@ const Routes = () => {
       <Route path="/admin/login" exact component={AdminLogin} />
       <PrivateRouteAdmin
         path="/admin"
-        isAuthenticated={signed}
-        type={user?.user.type || ''}
+        isAuthenticated={signedAdmin}
+        type={userAdmin?.user.type || ''}
         component={Admin}
       />
     </Switch>

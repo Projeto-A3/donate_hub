@@ -5,15 +5,15 @@ import Navigation from 'components/Navigation'
 import Routes from 'routes'
 
 export default function Layout() {
-  const { signed } = useAuth()
+  const { signed, signedAdmin } = useAuth()
   return (
     <section
       className={`h-100 ${
-        !signed ? 'd-flex flex-wrap justify-content-center' : ''
+        !signed && !signedAdmin ? 'd-flex flex-wrap justify-content-center' : ''
       }`}
     >
       <ToastContainer />
-      {!signed && (
+      {!signed && !signedAdmin && (
         <div className="w-100">
           <Navigation />
         </div>

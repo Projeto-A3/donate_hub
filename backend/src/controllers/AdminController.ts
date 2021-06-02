@@ -7,6 +7,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Admin from '@models/Administrator';
 import Donations from '@models/Donations';
+import User from '@models/User';
 const nodemailer = require('nodemailer');
 const SMTP_CONFIG = require('@config/smtp');
 const transporter = nodemailer.createTransport({
@@ -29,6 +30,19 @@ const generateToken = (admin: Admin) => {
 class AdminController {
   index(req: Request, res: Response) {
     return res.send({adminId: req.userId});
+  }
+
+  async listUsers (req: Request, res: Response) {
+    const repository = getRepository(User)
+    const all = await repository.find()
+    return res.status(200).send(viewAdmin.renderManyUser(all))
+  }
+  
+  async listDonates (req: Request, res: Response) {
+    const repository = getRepository(Donations)
+    const all = await repository.find()
+
+    return res.status(200).send(viewAdmin.renderManyDonation(all))
   }
 
   async authenticate(req: Request, res: Response) {
@@ -69,7 +83,7 @@ class AdminController {
     }
 
     return res.json({
-      admin: viewAdmin.render(admin),
+      user: viewAdmin.render(admin),
       token,
     });
   }

@@ -67,3 +67,10 @@ export interface UserAdmin {
 export type UserAdminLogin = Pick<IUserAdminRegister, 'email' | 'password'>
 
 export type RegisterDonation = Omit<ICardDonation, 'donee' | 'status' | 'id'>
+
+export type AdminListUser = Omit<
+  UserRegister,
+  'cpf_cnpj' | 'password' | 'address'
+>
+
+export type AdminListDonations = Omit<ICardDonation, 'donee'>

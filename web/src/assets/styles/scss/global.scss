@@ -10,6 +10,7 @@
 
 // Pages
 @import "./pages/dashboard.scss";
+@import "./pages/admin-home.scss";
 
 html, body {
   background-color: theme-color('light');
@@ -28,4 +29,18 @@ input, textarea, button {
 
 #root, .app {
   height: 100vh;
+}
+
+.loading-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(#000, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  color: #fff;
 }

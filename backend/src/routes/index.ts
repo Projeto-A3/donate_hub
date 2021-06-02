@@ -48,6 +48,8 @@ routes.delete('/user', authMiddleware, UserController.removeUser);
 // Admins
 routes.post('/admin/login', AdminController.authenticate);
 routes.post('/admin/create', AdminController.store);
+routes.get('/admin/listUsers', AdminController.listUsers)
+routes.get('/admin/listDonates', AdminController.listDonates)
 routes.put('/toApprove', AdminController.toApprove);
 routes.put('/approve/:id', AdminController.approve);
 

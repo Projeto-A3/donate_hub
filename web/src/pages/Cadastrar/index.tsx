@@ -340,12 +340,8 @@ const Cadastrar = () => {
                                 if (res.erro) {
                                   throw new Error()
                                 }
-                                const {
-                                  logradouro,
-                                  bairro,
-                                  localidade,
-                                  uf
-                                } = res
+                                const { logradouro, bairro, localidade, uf } =
+                                  res
                                 setFieldValue('address.street', logradouro)
                                 setFieldValue('address.district', bairro)
                                 setFieldValue('address.city', localidade)

@@ -38,7 +38,7 @@ export class CreateAdminTable1621399631663 implements MigrationInterface {
             {
               name: 'type',
               type: 'varchar',
-              default: 'admin',
+              default: '"admin"',
               isNullable: false,
             },
           ],

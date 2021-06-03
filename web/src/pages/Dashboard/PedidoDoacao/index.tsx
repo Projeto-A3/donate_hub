@@ -31,7 +31,7 @@ export default function PedidoDoacao() {
   return (
     <Container className="fadeIn" fluid>
       <TitlePage title="Ajude o próximo, cadastre um pedido" />
-      <Row className="align-items-center justify-content-between">
+      <Row className="justify-content-between">
         <Col lg={6}>
           <img
             src={IconDonation}
@@ -47,7 +47,7 @@ export default function PedidoDoacao() {
             nossos doadores entrem em contato com você.
           </p>
         </Col>
-        <Col lg={5}>
+        <Col lg={6}>
           <div className="card-form bg-light shadow">
             <header className="mb-5 text-center text-dark">
               <p className="h1 font-weight-bold text-secundary">

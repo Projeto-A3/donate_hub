@@ -193,7 +193,7 @@ export default function Donates() {
               <Row>
                 {listInactives.map(item => {
                   return (
-                    <Col key={item.id} lg={3}>
+                    <Col key={item.id} lg={4}>
                       <div className="mb-2">
                         <CardDonation
                           id={item.id}
@@ -258,7 +258,7 @@ export default function Donates() {
               <Row>
                 {listActives.map(item => {
                   return (
-                    <Col key={item.id} lg={3}>
+                    <Col key={item.id} lg={4}>
                       <div className="mb-2">
                         <CardDonation
                           id={item.id}
@@ -323,7 +323,7 @@ export default function Donates() {
               <Row>
                 {listResolved.map(item => {
                   return (
-                    <Col key={item.id} lg={3}>
+                    <Col key={item.id} lg={4}>
                       <div className="mb-2">
                         <CardDonation
                           id={item.id}

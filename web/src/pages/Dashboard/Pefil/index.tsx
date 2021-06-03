@@ -469,7 +469,7 @@ export default function Perfil() {
                   {donations.length ? (
                     donations.map(item => {
                       return (
-                        <Col lg={3} key={item.id}>
+                        <Col lg={4} key={item.id}>
                           <CardDonation
                             description={item.description}
                             title={item.title}
@@ -509,7 +509,7 @@ export default function Perfil() {
                   {donations.length ? (
                     donations.map(item => {
                       return (
-                        <Col lg={3} key={item.id}>
+                        <Col lg={4} key={item.id}>
                           <CardDonation
                             description={item.description}
                             title={item.title}

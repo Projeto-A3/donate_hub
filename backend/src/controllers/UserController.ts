@@ -7,6 +7,15 @@ import authConfig from '@config/auth';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+
+const headerEmail = `
+<tr>
+  <td style="padding: 20px;">
+    <img src="https://raw.githubusercontent.com/Projeto-A3/donate_hub/main/web/src/assets/images/logo.png" width="180" />
+  </td>
+</tr>
+`
+
 const nodemailer = require('nodemailer');
 const SMTP_CONFIG = require('@config/smtp');
 const transporter = nodemailer.createTransport({
@@ -120,7 +129,16 @@ class UserController {
           html: `
         <html>
         <body>
-          <strong>${user.name}, seu cadastro foi realizado com sucesso!</strong></br>
+          <div>
+            <table style="width: 800px; margin: 0 auto; background: #bbe2f2; text-align: center; padding: 20px;">
+              ${headerEmail}
+              <tr>
+                  <td>
+                    <strong>${user.name}, seu cadastro foi realizado com sucesso!</strong></br>
+                  </td>
+              </tr>
+            </table>
+          </div>
         </body>
         </html> 
         `,
@@ -162,14 +180,23 @@ class UserController {
       if(JSON.parse(process.env.MAILER_SENT_EMAIL || ''))  {
         await transporter
         .sendMail({
-          text: 'Você se cadastrou no DonateHub',
+          text: 'Você fez um login no DonateHub',
           subject: 'Login DonateHub',
           from: `Donate Hub <${process.env.MAILER_EMAIL}>`,
           to: [`${user.email}`, `${process.env.MAILER_EMAIL}`],
           html: `
         <html>
         <body>
-          <strong>${user.name}, seu login foi realizado com sucesso! </strong></br>
+          <div>
+            <table style="width: 800px; margin: 0 auto; background: #bbe2f2; text-align: center; padding: 20px;">
+              ${headerEmail}
+              <tr>
+                  <td>
+                    <strong>${user.name}, seu login foi realizado com sucesso!</strong>
+                  </td>
+              </tr>
+            </table>
+          </div>
         </body>
         </html> 
         `,
@@ -240,10 +267,6 @@ class UserController {
     }
 
     return response.status(404).json({ message: 'Usuário não encontrado' });
-  }
-
-  async resetPassword (req: Request, res: Response) {
-    
   }
 
 }

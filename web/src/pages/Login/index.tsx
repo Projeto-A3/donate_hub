@@ -77,14 +77,6 @@ const Login = () => {
                         {errors.password && touched.password && errors.password}
                       </span>
                     </div>
-                    <div className="mt-4 d-flex justify-content-end align-items-center">
-                      <Link
-                        to="/cadastrar"
-                        className="text-secundary font-weight-bold"
-                      >
-                        Recuperar a senha
-                      </Link>
-                    </div>
                     <div className="text-center mt-5">
                       <button
                         className="theme-button secundary"

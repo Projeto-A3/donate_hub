@@ -71,6 +71,12 @@ export default class User {
   @UpdateDateColumn({ default: ()=> new Date() }) 
   updatedAt: Date;
 
+  @Column({ type: 'varchar' })
+  passwordResetToken: string
+
+  @Column({ type: 'date' })
+  passwordResetExpires: Date
+
   @BeforeInsert()
   updateDateCreation() {
     this.createdAt = new Date();

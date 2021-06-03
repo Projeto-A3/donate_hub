@@ -1,13 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Container, Row, Col, Spinner } from 'react-bootstrap'
 import { Formik, FormikHelpers } from 'formik'
 import { Link } from 'react-router-dom'
 import schemas from 'schemas/utils'
 import { UserLogin } from 'interfaces'
 import { useAuth } from 'contexts/auth'
+import { FiEye, FiEyeOff } from 'react-icons/fi'
 
 const Login = () => {
   const { signIn } = useAuth()
+  const [showPassoword, setShowPassword] = useState(false)
+
   async function requestLogin(
     value: UserLogin,
     actions: FormikHelpers<UserLogin>
@@ -63,7 +66,7 @@ const Login = () => {
                     <div className="form-field">
                       <label htmlFor="password">Senha</label>
                       <input
-                        type="password"
+                        type={showPassoword ? 'text' : 'password'}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         id="password"
@@ -73,9 +76,28 @@ const Login = () => {
                           touched.password && errors.password ? 'error' : ''
                         }
                       />
+                      <button
+                        type="button"
+                        className="show-password"
+                        onClick={() => setShowPassword(!showPassoword)}
+                      >
+                        {showPassoword ? (
+                          <FiEyeOff size={25} />
+                        ) : (
+                          <FiEye size={25} />
+                        )}
+                      </button>
                       <span className="text-danger">
                         {errors.password && touched.password && errors.password}
                       </span>
+                    </div>
+                    <div className="text-right">
+                      <Link
+                        to="/recuperar-senha"
+                        className="text-secundary font-weight-bold small"
+                      >
+                        Esqueci a senha
+                      </Link>
                     </div>
                     <div className="text-center mt-5">
                       <button

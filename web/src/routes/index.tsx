@@ -10,6 +10,7 @@ import AdminLogin from 'pages/Admin/Login'
 import Admin from 'pages/Admin'
 import PrivateRouteAdmin from './PrivateRouteAdmin'
 import Sobre from 'pages/Sobre'
+import RecuperarSenha from 'pages/RecuperarSenha'
 
 const Routes = () => {
   const { signed, userAdmin, signedAdmin } = useAuth()
@@ -17,6 +18,8 @@ const Routes = () => {
     <Switch>
       <Route path="/" exact component={Home} />
       <Route path="/login" component={Login} />
+      <Route path="/recuperar-senha" exact component={RecuperarSenha} />
+      <Route path="/recuperar-senha/:token" component={RecuperarSenha} />
       <Route path="/cadastrar" component={Cadastrar} />
       <Route path="/sobre" component={Sobre} />
       <PrivateRoute

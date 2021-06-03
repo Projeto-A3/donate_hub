@@ -85,5 +85,15 @@ export default {
       number: yup.string().required(),
       state: yup.string().required()
     })
+  }),
+  forgotPassword: yup.object().shape({
+    email: yup.string().required().email()
+  }),
+  resetPassword: yup.object().shape({
+    email: yup.string().required().email(),
+    password: yup.string().required(),
+    passwordConfirmation: yup
+      .string()
+      .oneOf([yup.ref('password'), null], 'As senhas não coincidem')
   })
 }

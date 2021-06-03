@@ -76,6 +76,16 @@ export default class CreateUserTable1618693786281
             name: 'updatedAt',
             type: 'datetime',
             default: 'now()',
+          },
+          {
+            name: 'passwordResetToken',
+            type: 'varchar',
+            isNullable: true
+          },
+          {
+            name: 'passwordResetExpires',
+            type: 'date',
+            isNullable: true
           }
         ],
       }),

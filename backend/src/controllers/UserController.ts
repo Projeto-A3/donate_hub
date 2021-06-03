@@ -5,6 +5,7 @@ import Address from '@models/Address';
 import viewUser from '@views/user_view';
 import authConfig from '@config/auth';
 import bcrypt from 'bcrypt';
+import crypto from 'crypto'
 import jwt from 'jsonwebtoken';
 
 
@@ -192,13 +193,13 @@ class UserController {
               ${headerEmail}
               <tr>
                   <td>
-                    <strong>${user.name}, seu login foi realizado com sucesso!</strong>
+                    <strong style="font-size: 20px">${user.name}, seu login foi realizado com sucesso!</strong>
                   </td>
               </tr>
             </table>
           </div>
         </body>
-        </html> 
+        </html>
         `,
         })
       }
@@ -267,6 +268,108 @@ class UserController {
     }
 
     return response.status(404).json({ message: 'Usuário não encontrado' });
+  }
+
+  async forgotPassword (req: Request, res: Response) {
+    const { email } = req.body
+    const repository = getRepository(User)
+    try {
+      const user = await repository.findOne({ email })
+      if(!user) {
+        return res.status(400).send({ message: 'Usuário não encontrado' })
+      }
+      const token = crypto.randomBytes(20).toString('hex')
+      const now = new Date()
+      now.setHours(now.getHours() + 1)
+
+      await repository.update(user.id, {
+        passwordResetToken: token,
+        passwordResetExpires: now
+      })
+
+      transporter
+        .sendMail({
+          subject: 'Link para Resetar sua Senha ✔',
+          from: `Donate Hub <${process.env.MAILER_EMAIL}>`,
+          to: [`${user.email}`, `${process.env.MAILER_EMAIL}`],
+          html: `
+        <html>
+        <body>
+          <div>
+            <table style="width: 800px; margin: 0 auto; background: #bbe2f2; text-align: center; padding: 20px;">
+              ${headerEmail}
+              <tr>
+                  <td>
+                    <strong style="font-size: 20px;">${user.name}, clique no botão para resetar sua senha</strong>
+                    <p style="margin-top: 40px;">
+                      <a href="${process.env.MAILER_URL_RESET_PASSWORD}/${token}" target="blank" style="padding:15px 20px; background: #d96666; color: #ffffff; text-decoration: none;">
+                        Recuperar senha
+                      </a>
+                    </p>
+                  </td>
+              </tr>
+            </table>
+          </div>
+        </body>
+        </html>
+        `,
+        }, (err: any) => {
+          if(err){
+            return res.status(400).send({ error: 'Não conseguimos enviar o e-mail' })
+          }
+
+          return res.status(200).send({ message: "E-mail enviado com sucesso!" })
+        })
+
+    } catch (error) {
+      return res.status(400).send({ message: 'Erro ao recuperar a senha' })
+    }
+  }
+
+  async resetPassword (req: Request, res: Response)   {
+    const { email, token, password } =  req.body
+    const repository = getRepository(User)
+
+    try {
+      const user = await repository.findOne({ email })
+      if(!user) {
+        return res.status(400).send({ message: 'Usuário não encontrado' })
+      }
+      if(token !== user.passwordResetToken) {
+        return res.status(400).send({ message: 'Token inválido' })
+      }
+      const now = new Date()
+      if(now > user.passwordResetExpires) {
+        return res.status(400).send({ message: 'Token expirado, genere um novo token'})
+      }
+      user.password = password
+      await repository.save(user)
+      await transporter
+        .sendMail({
+          subject: 'Senha alterada com sucesso ✔',
+          from: `Donate Hub <${process.env.MAILER_EMAIL}>`,
+          to: [`${user.email}`, `${process.env.MAILER_EMAIL}`],
+          html: `
+        <html>
+        <body>
+          <div>
+            <table style="width: 800px; margin: 0 auto; background: #bbe2f2; text-align: center; padding: 20px;">
+              ${headerEmail}
+              <tr>
+                  <td>
+                    <strong style="font-size: 20px;">${user.name}, sua senha foi alterada</strong>
+                  </td>
+              </tr>
+            </table>
+          </div>
+        </body>
+        </html>
+        `,
+        })
+      res.status(200).send({ message: 'Senha atualizada'})
+    } catch (error) {
+      res.status(400).send({ message: 'Não foi possível resetar sua senha, tente novamente' })
+    }
   }
 
 }

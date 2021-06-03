@@ -13,6 +13,8 @@ routes.post('/login', UserController.authenticate);
 routes.post('/user/update', authMiddleware, UserController.updateUser);
 //remoção de usuário e endereço
 routes.delete('/user', authMiddleware, UserController.removeUser);
+routes.post('/user/forgotPassword', UserController.forgotPassword);
+routes.post('/user/resetPassword', UserController.resetPassword)
 
 
 // Donations

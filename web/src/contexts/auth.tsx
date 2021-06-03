@@ -19,6 +19,7 @@ interface AuthContextData {
   signOut(): void
   signInAdmin(credentials: UserAdminLogin): Promise<void>
   userAdmin: UserAdmin | null
+  updateUser(user: User): void
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData)
@@ -27,6 +28,8 @@ export const AuthProvider: React.FC = ({ children }) => {
   const history = useHistory()
   const [user, setUser] = useState<User | null>(null)
   const [userAdmin, setUserAdmin] = useState<UserAdmin | null>(null)
+  const [loading, setLoading] = useState(true)
+
   const storageNames = {
     user: '@donate-hub:user',
     token: '@donate-hub:token',
@@ -44,6 +47,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     if (storagedUser && storagedToken) {
       setUser({ user: JSON.parse(storagedUser), token: storagedToken })
     }
+    setLoading(false)
   }, [])
 
   /**
@@ -83,9 +87,21 @@ export const AuthProvider: React.FC = ({ children }) => {
     history.push('/')
   }
 
+  function updateUser(userData: User) {
+    if (user) {
+      setUser({ user: userData.user, token: user.token })
+      localStorage.setItem(storageNames.user, JSON.stringify(userData.user))
+    }
+  }
+
+  if (loading) {
+    return null
+  }
+
   return (
     <AuthContext.Provider
       value={{
+        updateUser,
         signed: !!user,
         signedAdmin: !!userAdmin,
         user,

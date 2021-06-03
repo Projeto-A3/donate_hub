@@ -6,10 +6,16 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    .btn-donates-inactives {
+      position: absolute;
+      top: -15px;
+      right: 7px;
+    }
     ul {
       margin: 0;
       padding: 0;
       li {
+        position: relative;
         text-align: center;
         list-style: none;
         margin-bottom: 30px;

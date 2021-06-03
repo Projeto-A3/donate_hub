@@ -49,7 +49,9 @@ export interface ICardDonation {
   title: string
   description: string
   status: number
-  donee: Pick<UserRegister, 'email' | 'phone' | 'name'>
+  donee?: Pick<UserRegister, 'email' | 'phone' | 'name'>
+  donor?: Pick<UserRegister, 'email' | 'phone' | 'name'>
+  createdAt?: string
 }
 
 export interface IUserAdminRegister {
@@ -68,9 +70,9 @@ export type UserAdminLogin = Pick<IUserAdminRegister, 'email' | 'password'>
 
 export type RegisterDonation = Omit<ICardDonation, 'donee' | 'status' | 'id'>
 
-export type AdminListUser = Omit<
-  UserRegister,
-  'cpf_cnpj' | 'password' | 'address'
->
+export interface AdminListUser
+  extends Omit<UserRegister, 'cpf_cnpj' | 'password'> {
+  createdAt?: string
+}
 
 export type AdminListDonations = Omit<ICardDonation, 'donee'>

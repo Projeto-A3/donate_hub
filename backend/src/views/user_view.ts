@@ -14,6 +14,8 @@ export default {
       phone: user.phone,
       type: user.type,
       address: address_view.render(user.address),
+      donee: user.requestDonee,
+      donor: user.requestDonor,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     }

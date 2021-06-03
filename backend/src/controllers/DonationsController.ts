@@ -11,20 +11,26 @@ class DonationsController {
 
   async list (req: Request, res: Response) {
     const userRepository = getRepository(User)
-    const user = await userRepository.findOne({ where: { id: req.userId }, relations: ['requestDonee', 'requestDonor'] })
+    const donationsRepository = getRepository(Donations)
+    const user = await userRepository.findOne({ where: { id: req.userId }})
 
     if(!user) {
-      return res.status(200).send({ message: 'Usuário não encontrado' })
+      return res.status(200).send([])
+    }
+    if(user.type.includes('doador')) {
+      const donations = await donationsRepository.find({ where: { donor: user }, relations: ['donor'] })
+      return res.status(200).send(viewDonations.renderMany(donations))
+    }else {
+      const donations = await donationsRepository.find({ where: { donee: user }, relations: ['donee'] })
+      return res.status(200).send([viewDonations.render(donations[0])])
     }
 
-    return res.status(200).send({
-      data: user.type.includes('doador') ? viewDonations.renderMany(user.requestDonor) : viewDonations.render(user.requestDonee)
-    })
+    
   }
 
   async listAll(req: Request, res: Response) {
     const repository = getRepository(Donations);
-    const donationsList = await repository.find({ where: { status: 0 }, relations: ['donee']});
+    const donationsList = await repository.find({ where: { status: 1 }, relations: ['donee']});
 
     return res.status(200).send({
       data: viewDonations.renderMany(donationsList),
@@ -44,7 +50,7 @@ class DonationsController {
       return res.status(404).send({ message: 'Erro ao atualizar' })
     }
 
-    const updateDonation = await repository.update(id, { donor: user })
+    const updateDonation = await repository.update(id, { donor: user, status: 2 })
 
     if(updateDonation.affected === 1) {
       return res.status(200).send({ message: 'Obrigado por ajudar o próximo' })
@@ -59,17 +65,13 @@ class DonationsController {
     let { title, description, dueDate } = req.body;
 
     const user = await userRepository.findOne({ where: { id: req.userId }, relations: ['requestDonee']})
-    const descExists = await userRepository.findOne({ where: { description: description }})
     
-    if(descExists){
-      return res.status(409).send({ message: 'Já existe uma solicitação com a mesma descrição!' })
-    }
     if(!user) {
       return res.status(200).send({ message: 'Usuário não encontrado' })
     }
 
-    if(user.requestDonee) {
-      return res.status(409).send({ message: 'Já existe uma solicitação em aberto' })
+    if(user.requestDonee && user.requestDonee.status === 1) {
+      return res.status(409).send({ message: 'Já existe uma solicitação ativa' })
     }
 
     const donations = repository.create({
@@ -80,7 +82,6 @@ class DonationsController {
     });
 
     await repository.save(donations);
-    
     return res.status(200).send({ message: 'Pedido realizado com sucesso! Aguarde a confirmação da sua solicitação' })
   }
 
@@ -101,16 +102,15 @@ class DonationsController {
   //Delete
   async removeDonations(req: Request, res: Response) {
     const repository = getRepository(Donations);
-    const id = req.donationId as string;
+    const { id } = req.params
 
     const donations = await repository.delete(id);
 
     if (donations.affected === 1) {
-      const updateDonations = await repository.findOne(id);
-      return res.json({ message: 'Solicitação de ajuda removida' });
+      return res.status(200).send({ message: 'Solicitação de ajuda removida' });
     }
 
-    return res.status(404).json({ message: 'Ajuda não encontrada' });
+    return res.status(404).send({ message: 'Ajuda não encontrada' });
   }
 }
 

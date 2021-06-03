@@ -26,9 +26,6 @@ const Navigation: React.FC = () => {
             <Nav.Link as={NavLink} to="/sobre" exact activeClassName="active">
               Sobre
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/contato" exact activeClassName="active">
-              Contato
-            </Nav.Link>
             <Nav.Link as={NavLink} to="/login" exact activeClassName="active">
               Login
             </Nav.Link>

@@ -3,11 +3,25 @@ import  Address from '@models/Address';
 
 export default {
   render (address: Address) {
+    const {
+      additionalDetails,
+      city,
+      district,
+      id,
+      number,
+      state,
+      street,
+      zipCode,
+    } = address
     return {
-      street: address.street,
-      state: address.state,
-      zipCode: address.zipCode,
-      id: address.id,
+      additionalDetails,
+      city,
+      district,
+      id,
+      number,
+      state,
+      street,
+      zipCode
     }
   },
 };

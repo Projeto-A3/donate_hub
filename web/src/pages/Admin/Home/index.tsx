@@ -114,7 +114,7 @@ export default function Home() {
       <div className="mt-5">
         <Row className="justify-content-center">
           <Col lg={4}>
-            <Card>
+            <Card className="shadow">
               <Card.Header as="strong">
                 Proporção Doadores x Donatários
               </Card.Header>
@@ -184,7 +184,7 @@ export default function Home() {
             </Card>
           </Col>
           <Col lg={4} className="offset-lg-1">
-            <Card>
+            <Card className="shadow">
               <Card.Header as="strong">
                 Proporção de pedidos Ativos x Inativos x Resolvidos
               </Card.Header>

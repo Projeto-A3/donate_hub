@@ -34,14 +34,13 @@ class AdminController {
 
   async listUsers (req: Request, res: Response) {
     const repository = getRepository(User)
-    const all = await repository.find()
+    const all = await repository.find({ relations: ['address'] })
     return res.status(200).send(viewAdmin.renderManyUser(all))
   }
   
   async listDonates (req: Request, res: Response) {
     const repository = getRepository(Donations)
-    const all = await repository.find()
-
+    const all = await repository.find({ relations: ['donee', 'donor']})
     return res.status(200).send(viewAdmin.renderManyDonation(all))
   }
 
@@ -163,16 +162,18 @@ class AdminController {
     });
   }
 
-  async approve(req:Request, res: Response) {
+  async updateDonate(req:Request, res: Response) {
     const repository = getRepository(Donations);
   
     const donationId = req.params as unknown as number ;
-  
-
-    const donation = await repository.update(donationId, {status:1})
-    console.log(donationId)
-    return res.send(donation)
+    const { status } = req.body
     
+    if(!status && typeof status !== 'number') {
+      return res.status(406).send({ message: 'Erro no status' })
+    }
+
+    await repository.update(donationId, { status })
+    return res.status(200).send({ message: 'Doação atualizada' })
   }
 
 }

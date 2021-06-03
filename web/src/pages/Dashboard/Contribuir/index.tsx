@@ -7,11 +7,13 @@ import { Col, Container, Row } from 'react-bootstrap'
 import api from 'services/api'
 import { FaFolderOpen } from 'react-icons/fa'
 import TitlePage from 'components/TitlePage'
+import Swal from 'sweetalert2'
 
 export default function Contribuir() {
   const { user } = useAuth()
   const [loading, setLoading] = useState(true)
   const [donations, setDonations] = useState<ICardDonation[]>([])
+  const [reRender, setRerender] = useState(false)
 
   useEffect(() => {
     async function listAll() {
@@ -25,7 +27,44 @@ export default function Contribuir() {
     }
 
     listAll()
-  }, [])
+  }, [reRender])
+
+  const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+      confirmButton: 'btn btn-success mr-4',
+      cancelButton: 'btn btn-danger'
+    },
+    buttonsStyling: false
+  })
+
+  function selectDonate(id: number) {
+    swalWithBootstrapButtons
+      .fire({
+        title: 'Tem certeza que deseja ajudar ?',
+        text: 'Obrigado pela iniciativa de ajudar o próximo.',
+        icon: 'question',
+        confirmButtonText: 'Quero ajudar',
+        showCancelButton: true,
+        cancelButtonText: 'Não vou ajudar',
+        padding: '3rem'
+      })
+      .then(async result => {
+        if (result.isConfirmed) {
+          try {
+            await api.put(`donations/${id}`)
+            await Swal.fire({
+              title: 'Obrigado por ajudar',
+              icon: 'success',
+              timer: 3000,
+              timerProgressBar: true,
+              showConfirmButton: false,
+              padding: '3rem'
+            })
+            setRerender(true)
+          } catch (error) {}
+        }
+      })
+  }
 
   if (!user) return null
 
@@ -58,10 +97,12 @@ export default function Contribuir() {
               <Col lg={4} key={item.id}>
                 <div className="mb-3">
                   <CardDonation
+                    select={selectDonate}
                     donee={item.donee}
                     title={item.title}
                     description={item.description}
                     status={item.status}
+                    id={item.id}
                   />
                 </div>
               </Col>

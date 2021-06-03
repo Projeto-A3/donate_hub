@@ -22,7 +22,9 @@ export default function PedidoDoacao() {
     try {
       const { data } = await api.post<{ message: string }>('donations', value)
       toast.success(data.message)
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
     actions.setSubmitting(false)
   }
 

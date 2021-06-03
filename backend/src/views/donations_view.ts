@@ -7,10 +7,11 @@ export default {
       title: donation.title,
       description: donation.description,
       status: donation.status,
+      createdAt: donation.dueDate,
       donee: donation.donee && {
         name: donation.donee.name,
         phone: donation.donee.phone,
-        email: donation.donee.email
+        email: donation.donee.email,
       },
       donor: donation.donor && {
         name: donation.donor.name,

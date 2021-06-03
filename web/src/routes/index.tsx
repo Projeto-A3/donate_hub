@@ -9,15 +9,16 @@ import { useAuth } from 'contexts/auth'
 import AdminLogin from 'pages/Admin/Login'
 import Admin from 'pages/Admin'
 import PrivateRouteAdmin from './PrivateRouteAdmin'
+import Sobre from 'pages/Sobre'
 
 const Routes = () => {
   const { signed, userAdmin, signedAdmin } = useAuth()
-
   return (
     <Switch>
       <Route path="/" exact component={Home} />
       <Route path="/login" component={Login} />
       <Route path="/cadastrar" component={Cadastrar} />
+      <Route path="/sobre" component={Sobre} />
       <PrivateRoute
         path="/dashboard"
         isAuthenticated={signed}

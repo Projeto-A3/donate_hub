@@ -30,7 +30,7 @@ class UserController {
   async index(req: Request, res: Response) {
     const id = req.userId
     const repository = getRepository(User);
-    const user = await repository.findOne({ where: { id }, relations: ['address'] })
+    const user = await repository.findOne({ where: { id }, relations: ['address', 'requestDonee', 'requestDonor'] })
     if(!user) {
       return res.status(404).send({ message: 'Usuário não encontrado'})
     }
@@ -188,22 +188,26 @@ class UserController {
   //Update
   async updateUser(req: Request, res: Response) {
     const repository = getRepository(User);
+    const addressRepository = getRepository(Address);
     const id = req.userId;
     const { address, phone, dependents } = req.body
-    
-    const user = await repository.findOne({ where: { id }})
 
-    if(!user) {
-      return res.status(404).send({ message: 'Usuário não encontrado' })
+    try {
+      const user = await repository.findOne({ where: { id }, relations: ['address']})
+
+      if(!user) {
+        return res.status(404).send({ message: 'Usuário não encontrado' })
+      }
+      const updateUser = await repository.update(id as string, { phone, dependents });
+      const updateAddress = await addressRepository.update(user.address.id, address)
+      if (updateUser.affected === 1 && updateAddress.affected === 1) {
+        return res.status(200).json({ message: 'Dados atualizados com sucesso!' });
+      }
+
+      return response.status(400).json({ message: 'Usuário não pode atualizar os dados' });
+    } catch (error) {
+      return response.status(400).json({ message: 'Usuário não pode atualizar os dados' });
     }
-
-    const updateUser = await repository.update(id as string, { address, phone, dependents });
-    
-    if (updateUser.affected === 1) {
-      return res.status(200).json({ message: 'Dados atualizados com sucesso!' });
-    }
-
-    return response.status(400).json({ message: 'Usuário não pode atualizar os dados' });
   }
 
   async updateAddress(req: Request, res: Response) {
@@ -237,6 +241,11 @@ class UserController {
 
     return response.status(404).json({ message: 'Usuário não encontrado' });
   }
+
+  async resetPassword (req: Request, res: Response) {
+    
+  }
+
 }
 
 export default new UserController();

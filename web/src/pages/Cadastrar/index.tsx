@@ -7,12 +7,18 @@ import Inputmask from 'components/Inputmask'
 import { ufs, unMask } from 'utils'
 import viacep from 'services/viacep'
 import { useAuth } from 'contexts/auth'
+import schemas from 'schemas/utils'
 
-const user: UserRegister = {
+interface PropsAuxUser extends UserRegister {
+  passwordConfirmation?: string
+}
+
+const user: PropsAuxUser = {
   name: '',
   email: '',
   surname: '',
   password: '',
+  passwordConfirmation: '',
   birthDate: '',
   cpf_cnpj: '',
   dependents: 0,
@@ -36,8 +42,8 @@ const Cadastrar = () => {
   const { signUp } = useAuth()
 
   async function handlerRegister(
-    value: UserRegister,
-    actions: FormikHelpers<UserRegister>
+    value: PropsAuxUser,
+    actions: FormikHelpers<PropsAuxUser>
   ) {
     actions.setSubmitting(true)
     try {
@@ -61,6 +67,7 @@ const Cadastrar = () => {
                 initialValues={user}
                 onSubmit={handlerRegister}
                 enableReinitialize
+                validationSchema={schemas.registerUser}
               >
                 {({
                   handleSubmit,
@@ -156,6 +163,11 @@ const Cadastrar = () => {
                               touched.cpf_cnpj && errors.cpf_cnpj ? 'error' : ''
                             }
                           />
+                          <span className="text-danger">
+                            {errors.cpf_cnpj &&
+                              touched.cpf_cnpj &&
+                              errors.cpf_cnpj}
+                          </span>
                           <div className="d-flex align-items-center mt-2">
                             <input
                               type="checkbox"
@@ -165,22 +177,13 @@ const Cadastrar = () => {
                             />
                             <label htmlFor="isLegal">Pessoa Jurídica</label>
                           </div>
-                          <span className="text-danger">
-                            {errors.cpf_cnpj &&
-                              touched.cpf_cnpj &&
-                              errors.cpf_cnpj}
-                          </span>
                         </div>
                       </Col>
                       <Col lg={6}>
                         <div className="form-field mb-4">
                           <label htmlFor="phone">Telefone</label>
                           <Inputmask
-                            mask={
-                              values.phone.length > 14
-                                ? '(99) 99999-9999'
-                                : '(99) 9999-99999'
-                            }
+                            mask="(99) 99999-9999"
                             type="tel"
                             name="phone"
                             onChange={e => unMask(e, handleChange)}
@@ -280,14 +283,20 @@ const Cadastrar = () => {
                       </Col>
                       <Col lg={6}>
                         <div className="form-field mb-4">
-                          <label htmlFor="repeat-password">Repetir Senha</label>
+                          <label htmlFor="passwordConfirmation">
+                            Repetir Senha
+                          </label>
                           <input
                             type={showPassoword ? 'text' : 'password'}
-                            name="repeat-password"
+                            name="passwordConfirmation"
+                            value={values.passwordConfirmation}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            id="repeat-password"
+                            id="passwordConfirmation"
                             autoComplete="off"
+                            className={
+                              touched.password && errors.password ? 'error' : ''
+                            }
                           />
                           <button
                             type="button"
@@ -300,6 +309,11 @@ const Cadastrar = () => {
                               <FiEye size={25} />
                             )}
                           </button>
+                          <span className="text-danger">
+                            {errors.passwordConfirmation &&
+                              touched.passwordConfirmation &&
+                              errors.passwordConfirmation}
+                          </span>
                         </div>
                       </Col>
                       <Col lg={12}>

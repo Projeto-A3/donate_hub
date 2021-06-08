@@ -95,6 +95,22 @@ export default function Donates() {
     }
   }
 
+  async function remove(id: number | undefined) {
+    try {
+      await api.delete(`donations/${id}`)
+      await swalMessage({
+        isSuccess: true,
+        msgSuccess: 'Pedido deletado com sucesso!'
+      })
+      fnUpdateDonations()
+    } catch (error) {
+      await swalMessage({
+        isError: true,
+        msgError: 'Não foi possível deletar o pedido'
+      })
+    }
+  }
+
   function maskPhone(phone: string) {
     return phone.replace(
       phone.length > 10 ? /(\d{2})(\d{5})(\d*)/ : /(\d{2})(\d{4})(\d*)/,
@@ -222,6 +238,15 @@ export default function Donates() {
                               Detalhes
                             </button>
                           </div>
+                          <div className="text-center mt-2">
+                            <button
+                              type="button"
+                              className="btn btn-danger btn-block"
+                              onClick={() => remove(item.id)}
+                            >
+                              Remover
+                            </button>
+                          </div>
                         </CardDonation>
                       </div>
                     </Col>
@@ -287,6 +312,15 @@ export default function Donates() {
                               Detalhes
                             </button>
                           </div>
+                          <div className="text-center mt-2">
+                            <button
+                              type="button"
+                              className="btn btn-danger btn-block"
+                              onClick={() => remove(item.id)}
+                            >
+                              Remover
+                            </button>
+                          </div>
                         </CardDonation>
                       </div>
                     </Col>
@@ -350,6 +384,15 @@ export default function Donates() {
                               onClick={() => details(item)}
                             >
                               Detalhes
+                            </button>
+                          </div>
+                          <div className="text-center mt-2">
+                            <button
+                              type="button"
+                              className="btn btn-danger btn-block"
+                              onClick={() => remove(item.id)}
+                            >
+                              Remover
                             </button>
                           </div>
                         </CardDonation>

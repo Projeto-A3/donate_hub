@@ -70,8 +70,13 @@ class DonationsController {
       return res.status(200).send({ message: 'Usuário não encontrado' })
     }
 
-    if(user.requestDonee && user.requestDonee.status === 1) {
-      return res.status(409).send({ message: 'Já existe uma solicitação ativa' })
+    if(user.requestDonee) {
+      if(user.requestDonee.status === 1) {
+        return res.status(409).send({ message: 'Já existe uma solicitação ativa!' })
+      }
+      if(user.requestDonee.status === 0) {
+        return res.status(409).send({ message: 'Já existe uma solicitação esperando por aprovação!' })
+      }
     }
 
     const donations = repository.create({

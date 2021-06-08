@@ -40,7 +40,7 @@ export default function DashboardHome() {
       <Row>
         {listNews.map((item, index) => {
           return (
-            <Col key={index} lg={4}>
+            <Col key={index} lg={6}>
               <Card className="mb-4">
                 <Card.Header>
                   <h5 className="mb-0">

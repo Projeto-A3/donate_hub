@@ -11,9 +11,11 @@ import schemas from 'schemas/utils'
 
 interface PropsAuxUser extends UserRegister {
   passwordConfirmation?: string
+  terms_conditions: boolean
 }
 
 const user: PropsAuxUser = {
+  terms_conditions: false,
   name: '',
   email: '',
   surname: '',
@@ -586,6 +588,32 @@ const Cadastrar = () => {
                             </div>
                           </div>
                         </div>
+                      </Col>
+                      <Col>
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            name="terms_conditions"
+                            type="checkbox"
+                            value="on"
+                            id="terms_conditions"
+                            checked={values.terms_conditions}
+                            onChange={handleChange}
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor="terms_conditions"
+                          >
+                            Estou de acordo em compartilhar meus dados com a
+                            plataforma Donate Hub e com seu compartilhamento
+                            entre os usuários cadastrados dentro do sistema.
+                          </label>
+                        </div>
+                        <span className="text-danger">
+                          {errors.terms_conditions &&
+                            touched.terms_conditions &&
+                            errors.terms_conditions}
+                        </span>
                       </Col>
                     </Row>
                     <div className="text-center mt-5">

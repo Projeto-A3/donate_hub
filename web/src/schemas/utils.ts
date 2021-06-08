@@ -20,6 +20,12 @@ export default {
     description: yup.string().required()
   }),
   registerUser: yup.object().shape({
+    terms_conditions: yup
+      .bool()
+      .oneOf(
+        [true],
+        'Campo obrigatório para realizar o cadastro na plataforma'
+      ),
     name: yup
       .string()
       .required()
